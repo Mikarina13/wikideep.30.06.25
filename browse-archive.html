@@ -445,6 +445,36 @@
           font-size: 28px;
         }
       }
+
+      /* Match search results header to collab page */
+      .search-results-header {
+        background-color: #07717c;
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+        border-radius: 12px 12px 0 0;
+        margin-bottom: 0;
+      }
+      
+      .search-results-header h2 {
+        color: white;
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+      }
+      
+      .search-filters-content {
+        border-radius: 0 0 12px 12px;
+      }
+      
+      /* Special styling for filter toggle button to match collab page */
+      .filters-toggle {
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        justify-content: center;
+        max-width: 200px;
+      }
     </style>
   </head>
   <body>
@@ -521,6 +551,11 @@
       
       <div class="browse-stats" id="browse-stats">
         <p>Loading posts...</p>
+      </div>
+      
+      <!-- Filter section with header that matches collab page -->
+      <div class="search-results-header">
+        <h2>Archive Search Results</h2>
       </div>
       
       <!-- Filters Toggle Button -->
@@ -695,60 +730,5 @@
         <a href="/our-vision.html">Our Vision</a>
       </div>
     </div>
-
-    <script>
-      // Client-side JavaScript to toggle filters visibility
-      document.addEventListener('DOMContentLoaded', function() {
-        const filtersToggle = document.getElementById('filters-toggle');
-        const filtersContent = document.getElementById('search-filters-content');
-        
-        if (filtersToggle && filtersContent) {
-          filtersToggle.addEventListener('click', function() {
-            const isVisible = filtersContent.style.display !== 'none';
-            
-            if (isVisible) {
-              filtersContent.style.display = 'none';
-              filtersToggle.textContent = 'Show Filters';
-              filtersToggle.classList.remove('active');
-              
-              // Add the icon back after changing text
-              const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              iconSvg.setAttribute('width', '18');
-              iconSvg.setAttribute('height', '18');
-              iconSvg.setAttribute('viewBox', '0 0 24 24');
-              iconSvg.setAttribute('fill', 'none');
-              iconSvg.setAttribute('stroke', 'currentColor');
-              iconSvg.setAttribute('stroke-width', '2');
-              
-              const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-              path.setAttribute('d', 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z');
-              iconSvg.appendChild(path);
-              
-              filtersToggle.insertBefore(iconSvg, filtersToggle.firstChild);
-            } else {
-              filtersContent.style.display = 'block';
-              filtersContent.classList.add('visible');
-              filtersToggle.textContent = 'Hide Filters';
-              filtersToggle.classList.add('active');
-              
-              // Add the icon back after changing text
-              const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              iconSvg.setAttribute('width', '18');
-              iconSvg.setAttribute('height', '18');
-              iconSvg.setAttribute('viewBox', '0 0 24 24');
-              iconSvg.setAttribute('fill', 'none');
-              iconSvg.setAttribute('stroke', 'currentColor');
-              iconSvg.setAttribute('stroke-width', '2');
-              
-              const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-              path.setAttribute('d', 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z');
-              iconSvg.appendChild(path);
-              
-              filtersToggle.insertBefore(iconSvg, filtersToggle.firstChild);
-            }
-          });
-        }
-      });
-    </script>
   </body>
 </html>
