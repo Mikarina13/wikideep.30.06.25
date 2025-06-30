@@ -231,3 +231,98 @@ body {
   opacity: 1 !important;
   visibility: visible !important;
 }
+
+/* Tab Styling - CRITICAL PRODUCTION FIX */
+.publish-tabs,
+.publish-container .publish-tabs {
+  display: flex !important;
+  gap: 2px !important;
+  margin-bottom: 0 !important;
+  justify-content: center !important;
+  background: rgba(6, 114, 115, 0.05) !important;
+  border-radius: 0 !important;
+  padding: 3px !important;
+  width: 100% !important;
+  z-index: 5 !important;
+}
+
+.tab-button,
+.publish-container .tab-button {
+  flex: 1 !important;
+  padding: 12px 20px !important;
+  background: transparent !important;
+  color: #07717c !important;
+  border: none !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  border-radius: 6px !important;
+}
+
+.tab-button:hover,
+.publish-container .tab-button:hover {
+  background: rgba(250, 198, 55, 0.15) !important;
+}
+
+.tab-button.active,
+.publish-container .tab-button.active {
+  background: #fac637 !important;
+  color: #07717c !important;
+  font-weight: 600 !important;
+}
+
+/* Important Additional Tab Fixes */
+#archive-tab.tab-button.active {
+  background-color: #fac637 !important;
+  color: #07717c !important;
+}
+
+#collab-tab.tab-button.active {
+  background-color: #fac637 !important;
+  color: #07717c !important;
+}
+
+/* Content Choice Buttons */
+.choice-button {
+  flex: 1 !important;
+  padding: 12px 20px !important;
+  background: transparent !important;
+  color: #07717c !important;
+  border: none !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  border-radius: 6px !important;
+  text-align: center !important;
+}
+
+.choice-button:hover {
+  background: rgba(250, 198, 55, 0.15) !important;
+}
+
+.choice-button.active {
+  background: #fac637 !important;
+  color: #07717c !important;
+  font-weight: 600 !important;
+}
+
+/* Publish Form Specific Fixes */
+.publish-form h2 {
+  color: #07717c !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  margin-bottom: 24px !important;
+  text-align: center !important;
+}
+
+.content-choice {
+  display: flex !important;
+  gap: 10px !important;
+  margin-bottom: 25px !important;
+  justify-content: center !important;
+  background: rgba(6, 114, 115, 0.05) !important;
+  border-radius: 8px !important;
+  padding: 3px !important;
+}
