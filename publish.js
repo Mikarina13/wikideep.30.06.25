@@ -79,51 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Restore form data from cache if available
   restoreFormData();
-  
-  // Force style application for production
-  forceStyleApplying();
 });
-
-function forceStyleApplying() {
-  console.log("Forcing style application");
-  
-  // Force tab styling
-  const archiveTab = document.getElementById('archive-tab');
-  const collabTab = document.getElementById('collab-tab');
-  
-  // Add inline styles with !important to ensure they take precedence
-  if (archiveTab) {
-    if (archiveTab.classList.contains('active')) {
-      archiveTab.style.backgroundColor = '#fac637';
-      archiveTab.style.color = '#07717c';
-      archiveTab.style.fontWeight = '600';
-    } else {
-      archiveTab.style.backgroundColor = 'transparent';
-    }
-  }
-  
-  if (collabTab) {
-    if (collabTab.classList.contains('active')) {
-      collabTab.style.backgroundColor = '#fac637';
-      collabTab.style.color = '#07717c';
-      collabTab.style.fontWeight = '600';
-    } else {
-      collabTab.style.backgroundColor = 'transparent';
-    }
-  }
-  
-  // Force choice button styling too
-  const choiceButtons = document.querySelectorAll('.choice-button');
-  choiceButtons.forEach(button => {
-    if (button.classList.contains('active')) {
-      button.style.backgroundColor = '#fac637';
-      button.style.color = '#07717c';
-      button.style.fontWeight = '600';
-    } else {
-      button.style.backgroundColor = 'transparent';
-    }
-  });
-}
 
 function setupEventListeners() {
   // Tab switching
@@ -132,9 +88,6 @@ function setupEventListeners() {
     button.addEventListener('click', () => {
       const tab = button.dataset.tab;
       switchTab(tab);
-      
-      // Force style applying after tab switch
-      setTimeout(forceStyleApplying, 10);
     });
   });
 
@@ -144,9 +97,6 @@ function setupEventListeners() {
     button.addEventListener('click', () => {
       const choice = button.dataset.choice;
       switchContentChoice(choice);
-      
-      // Force style applying after choice switch
-      setTimeout(forceStyleApplying, 10);
     });
   });
 
@@ -218,9 +168,6 @@ function switchTab(tabName) {
       container.classList.add('tabs-hidden');
     }
   }
-  
-  // Force styles for production compatibility
-  forceStyleApplying();
 }
 
 function switchContentChoice(choice) {
@@ -246,9 +193,6 @@ function switchContentChoice(choice) {
 
   // Update required fields
   updateRequiredFields(choice);
-  
-  // Force styles for production compatibility
-  forceStyleApplying();
 }
 
 function updateRequiredFields(choice) {
@@ -1078,18 +1022,3 @@ function clearFormCache(formType) {
     console.error(`Error clearing ${formType} form cache:`, error);
   }
 }
-
-// Force style application on load and after DOM changes
-window.addEventListener('load', forceStyleApplying);
-document.addEventListener('DOMContentLoaded', forceStyleApplying);
-
-// Setup a mutation observer to fix styles when DOM changes
-const observer = new MutationObserver(function(mutations) {
-  forceStyleApplying();
-});
-observer.observe(document.body, {
-  childList: true,
-  subtree: true,
-  attributes: true,
-  attributeFilter: ['class', 'style']
-});
