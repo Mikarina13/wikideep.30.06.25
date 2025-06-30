@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help Center - WikiDeep.io</title>
+    <link rel="stylesheet" href="/style.css">
+    <script type="module" src="src/help.js"></script>
+    <script type="module" src="/src/footer-menu.js"></script>
+    <style>
+      .help-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 1000px;
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: hidden;
+        background: white;
+        padding: 0;
+        border-radius: 12px;
+        z-index: 1100;
+        box-shadow: 
+          0 0 15px rgba(6, 114, 115, 0.35),
+          0 0 30px rgba(6, 114, 115, 0.25),
+          0 0 45px rgba(6, 114, 115, 0.15),
+          0 0 60px rgba(6, 114, 115, 0.1);
+        animation: formGlow 2s ease-in-out infinite alternate;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .help-header-title {
+        background-color: #07717c;
+        color: white;
+        padding: 15px 0;
+        text-align: center;
+        width: 100%;
+        border-radius: 12px 12px 0 0;
+        z-index: 10;
+      }
+      
+      .help-header-title h1 {
+        color: white;
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+      }
+      
+      /* Close button styles */
+      .help-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        width: 24px;
+        height: 24px;
+        background: transparent;
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 20;
+        transition: transform 0.2s ease;
+      }
+      
+      .help-close-btn:hover {
+        transform: scale(1.2);
+      }
+      
+      .help-close-btn svg {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+      }
+
+      .modal-scroll-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+        position: relative;
+        background: white;
+      }
+
+      .help-intro {
+        background: linear-gradient(135deg, rgba(6, 114, 115, 0.08), rgba(250, 198, 55, 0.08));
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(6, 114, 115, 0.15);
+      }
+
+      .help-intro h2 {
+        color: #07717c;
+        margin-bottom: 15px;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .help-intro p {
+        color: #333;
+        font-size: 16px;
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      .help-sections {
+        display: grid;
+        gap: 30px;
+      }
+
+      .help-section {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid rgba(6, 114, 115, 0.1);
+        box-shadow: 0 4px 12px rgba(6, 114, 115, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .help-section:hover {
+        box-shadow: 0 8px 24px rgba(6, 114, 115, 0.1);
+        border-color: rgba(250, 198, 55, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .help-section h2 {
+        color: #07717c;
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 2px solid rgba(6, 114, 115, 0.1);
+        padding-bottom: 12px;
+      }
+
+      .help-section h3 {
+        color: #067273;
+        font-size: 20px;
+        font-weight: 600;
+        margin: 25px 0 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .help-section p {
+        color: #333;
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 18px;
+      }
+
+      .help-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+      }
+
+      .help-section li {
+        background: rgba(6, 114, 115, 0.03);
+        padding: 14px 18px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        border-left: 4px solid #fac637;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .help-section li strong {
+        color: #067273;
+        font-weight: 600;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 25px 0;
+      }
+
+      .feature-card {
+        background: rgba(6, 114, 115, 0.02);
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid rgba(6, 114, 115, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+      }
+
+      .feature-card:hover {
+        background: rgba(6, 114, 115, 0.05);
+        border-color: rgba(250, 198, 55, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .feature-card h4 {
+        color: #067273;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .feature-card p {
+        color: #666;
+        font-size: 15px;
+        margin: 0;
+        line-height: 1.6;
+      }
+
+      .step-by-step {
+        background: rgba(250, 198, 55, 0.05);
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid rgba(250, 198, 55, 0.2);
+        margin: 20px 0;
+      }
+
+      .step-by-step h4 {
+        color: #067273;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .step-by-step ol {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .step-by-step li {
+        background: none;
+        border: none;
+        padding: 10px 0;
+        margin-bottom: 8px;
+        color: #333;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .step-by-step li strong {
+        color: #067273;
+      }
+
+      .quick-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin: 25px 0;
+      }
+
+      .quick-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 18px;
+        background: #067273;
+        color: white !important;
+        text-decoration: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .quick-link:hover {
+        background: #045c66;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(6, 114, 115, 0.3);
+        color: white !important;
+        text-decoration: none;
+      }
+
+      .quick-link svg {
+        color: white;
+        flex-shrink: 0;
+      }
+
+      .contact-support-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 30px;
+        background: #fac637;
+        color: #067273 !important;
+        text-decoration: none;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        margin: 25px auto 0;
+        border: none;
+        cursor: pointer;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(250, 198, 55, 0.2);
+        display: block;
+        width: fit-content;
+      }
+
+      .contact-support-btn:hover {
+        background: #f8c832;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(250, 198, 55, 0.4);
+        color: #067273 !important;
+        text-decoration: none;
+      }
+
+      .contact-support-btn svg {
+        color: #067273;
+        flex-shrink: 0;
+      }
+
+      .tip-box {
+        background: linear-gradient(135deg, rgba(6, 114, 115, 0.05), rgba(250, 198, 55, 0.05));
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 4px solid #fac637;
+        margin: 20px 0;
+      }
+
+      .tip-box strong {
+        color: #067273;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      .tip-box p {
+        margin: 0;
+        font-size: 15px;
+        color: #666;
+        line-height: 1.6;
+      }
+
+      /* Support Section - Centered Layout */
+      .support-section {
+        text-align: center;
+        margin-top: 40px;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, rgba(6, 114, 115, 0.05), rgba(250, 198, 55, 0.05));
+        border-radius: 16px;
+        border: 1px solid rgba(6, 114, 115, 0.1);
+      }
+
+      .support-section h2 {
+        color: #067273;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        border: none;
+        padding: 0;
+      }
+
+      .support-section p {
+        color: #666;
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .support-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin: 30px 0;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .support-option {
+        background: white;
+        padding: 30px 24px;
+        border-radius: 16px;
+        border: 1px solid rgba(6, 114, 115, 0.1);
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .support-option:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(6, 114, 115, 0.15);
+        border-color: rgba(250, 198, 55, 0.3);
+      }
+
+      .support-option h4 {
+        color: #067273;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .support-option p {
+        color: #666;
+        font-size: 15px;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .support-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: #067273;
+        color: white !important;
+        text-decoration: none !important;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .support-link:hover {
+        background: #045c66;
+        transform: translateY(-1px);
+        color: white !important;
+        text-decoration: none !important;
+      }
+
+      /* Fix for Platform Overview section */
+      .platform-overview-section {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      
+      .platform-overview-container {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 20px;
+      }
+      
+      .platform-item {
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        border: 1px solid rgba(6, 114, 115, 0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 10px;
+        width: 100%;
+      }
+      
+      .platform-item:hover {
+        box-shadow: 0 5px 15px rgba(6, 114, 115, 0.1);
+        transform: translateY(-3px);
+      }
+      
+      .platform-item h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #067273;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      
+      .platform-item p {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 768px) {
+        .help-container {
+          padding: 0;
+          margin: 10px;
+          width: calc(100% - 20px);
+        }
+
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .quick-links {
+          grid-template-columns: 1fr;
+        }
+
+        .help-section {
+          padding: 20px;
+        }
+
+        .help-section h2 {
+          font-size: 20px;
+        }
+
+        .help-section h3 {
+          font-size: 18px;
+        }
+
+        .support-options {
+          grid-template-columns: 1fr;
+        }
+
+        .support-section h2 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="menu-header">
+      <img src="https://i.imgur.com/zcLQ3gB.png" alt="Menu Logo" class="menu-logo">
+      <div class="nav-links">
+        <div class="nav-container">
+          <a href="/publish.html" class="nav-item publish-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14"/>
+              <path d="M5 12h14"/>
+            </svg>
+            Publish
+          </a>
+          <a href="/index.html" class="nav-item archives-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4v16a2 2 0 002 2h12a2 2 0 002-2V8.342a2 2 0 00-.602-1.43l-4.44-4.342A2 2 0 0013.56 2H6a2 2 0 00-2 2z"/>
+              <path d="M14 2v4a2 2 0 002 2h4"/>
+            </svg>
+            ARCHIVES
+          </a>
+          <a href="/collab.html" class="nav-item collab-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+              <path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            COLLAB
+          </a>
+          <a href="/forum.html" class="nav-item forum-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Forum
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="menu-overlay"></div>
+    <div class="menu-options"></div>
+    <div class="left-edge-trigger"></div>
+    <div class="menu-hamburger-indicator">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </div>
+
+    <div class="help-container">
+      <div class="help-header-title">
+        <h1>Help Center</h1>
+        <!-- Add close button -->
+        <button class="help-close-btn" id="help-close-btn" aria-label="Close help center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-scroll-content">
+        <div class="help-intro">
+          <h2>Welcome to WikiDeep.io!</h2>
+          <p>Your comprehensive guide to sharing AI insights, collaborating with others, and building the world's largest open AI knowledge archive. Learn how to make the most of our platform and contribute to the community.</p>
+        </div>
+
+        <div class="help-sections">
+          
+          <!-- Getting Started Section -->
+          <div class="help-section">
+            <h2>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+              </svg>
+              Getting Started
+            </h2>
+            
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="8.5" cy="7" r="4"/>
+                <line x1="20" y1="8" x2="20" y2="14"/>
+                <line x1="23" y1="11" x2="17" y2="11"/>
+              </svg>
+              Creating Your Account
+            </h3>
+            <div class="step-by-step">
+              <h4>📝 Sign Up Process:</h4>
+              <ol>
+                <li><strong>Click "Sign Up"</strong> in the top menu or side navigation</li>
+                <li><strong>Choose your method:</strong> Email & password or Google sign-in</li>
+                <li><strong>Verify your email</strong> (if using email signup)</li>
+                <li><strong>Complete your profile</strong> with display name and bio</li>
+                <li><strong>Start exploring!</strong> Browse archives or publish your first post</li>
+              </ol>
+            </div>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9,22 9,12 15,12 15,22"/>
+              </svg>
+              Platform Overview
+            </h3>
+            <div class="platform-overview-section">
+              <div class="platform-overview-container">
+                <div class="platform-item">
+                  <h3>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    Archive
+                  </h3>
+                  <p>Browse and share AI-generated insights, research, and deep search results from various AI models.</p>
+                </div>
+                <div class="platform-item">
+                  <h3>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                      <path d="M16 3.13a4 4 0 010 7.75"/>
+                    </svg>
+                    Collaboration
+                  </h3>
+                  <p>Find collaboration partners, share project ideas, and connect with like-minded creators.</p>
+                </div>
+                <div class="platform-item">
+                  <h3>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Forum
+                  </h3>
+                  <p>Discuss posts, ask questions, and engage with the community in threaded conversations.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="quick-links">
+              <a href="/login.html?tab=signup" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="8.5" cy="7" r="4"/>
+                  <line x1="20" y1="8" x2="20" y2="14"/>
+                  <line x1="23" y1="11" x2="17" y2="11"/>
+                </svg>
+                Sign Up Now
+              </a>
+              <a href="/index.html" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+                Browse Archive
+              </a>
+            </div>
+          </div>
+
+          <!-- Publishing Content Section -->
+          <div class="help-section">
+            <h2>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14"/>
+                <path d="M5 12h14"/>
+              </svg>
+              Publishing AI Content
+            </h2>
+            
+            <p>Share your valuable AI-generated insights with the community and help build the world's largest open AI knowledge archive.</p>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+              Archive Posts
+            </h3>
+            <div class="step-by-step">
+              <h4>📚 How to Publish Archive Content:</h4>
+              <ol>
+                <li><strong>Click "Publish"</strong> in the navigation menu</li>
+                <li><strong>Choose "Archive"</strong> tab (or it will auto-select based on your page)</li>
+                <li><strong>Fill in the details:</strong>
+                  <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li>Title: Descriptive title for your insight</li>
+                    <li>AI Model: Which AI generated this content</li>
+                    <li>Original Prompt: Your prompt (can be kept private)</li>
+                    <li>Content: Paste the AI response OR share a link</li>
+                    <li>Tags: Add relevant keywords for discovery</li>
+                  </ul>
+                </li>
+                <li><strong>Choose content type:</strong> Paste text directly or share a link (Google Docs, ChatGPT conversations, etc.)</li>
+                <li><strong>Set prompt privacy:</strong> Share your prompt publicly or keep it private</li>
+                <li><strong>Publish!</strong> Your content joins the open archive</li>
+              </ol>
+            </div>
+
+            <div class="tip-box">
+              <strong>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                </svg>
+                Pro Tip:
+              </strong>
+              <p>High-quality, detailed AI responses work best! Think research summaries, complex explanations, creative outputs, or problem-solving results that took significant prompting.</p>
+            </div>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                <path d="M16 3.13a4 4 0 010 7.75"/>
+              </svg>
+              Collaboration Posts
+            </h3>
+            <div class="step-by-step">
+              <h4>🤝 How to Post Collaboration Opportunities:</h4>
+              <ol>
+                <li><strong>Click "Publish"</strong> and select collaboration type</li>
+                <li><strong>Choose your type:</strong> "Looking for Collaboration" or "Offering to Collaborate"</li>
+                <li><strong>Write a compelling title</strong> that clearly describes your project or skills</li>
+                <li><strong>Detailed description:</strong> Explain your project, goals, timeline, and what you're looking for</li>
+                <li><strong>Add relevant tags:</strong> Skills, technologies, project types, experience level</li>
+                <li><strong>Provide contact info:</strong> Your email for interested collaborators</li>
+                <li><strong>Publish!</strong> Your opportunity appears in the collaboration board</li>
+              </ol>
+            </div>
+
+            <div class="quick-links">
+              <a href="/publish.html" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5v14"/>
+                  <path d="M5 12h14"/>
+                </svg>
+                Start Publishing
+              </a>
+              <a href="/info-hub.html#contributor-guidelines" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                </svg>
+                Guidelines
+              </a>
+            </div>
+          </div>
+
+          <!-- Browsing and Discovery Section -->
+          <div class="help-section">
+            <h2>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+              </svg>
+              Browsing & Discovery
+            </h2>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18l-2 13H5L3 6z"/>
+                <path d="M3 6L2 2H1"/>
+              </svg>
+              Finding Content
+            </h3>
+            <ul>
+              <li><strong>Search:</strong> Use the search bar to find specific topics, keywords, or AI models</li>
+              <li><strong>Filter by AI Model:</strong> Browse content from specific AI models (GPT-4, Claude, Gemini, etc.)</li>
+              <li><strong>Sort Options:</strong> Newest, oldest, most viewed, alphabetical, or most favorited</li>
+              <li><strong>Tag Browsing:</strong> Click on tags to discover related content</li>
+              <li><strong>Advanced Filters:</strong> Filter by content type, prompt visibility, date range, view count</li>
+            </ul>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              Favorites & Activity
+            </h3>
+            <ul>
+              <li><strong>Save Favorites:</strong> Click the heart icon on any post to save it to your favorites</li>
+              <li><strong>Download Content:</strong> Download archive posts as text files for offline reading</li>
+              <li><strong>Track Activity:</strong> View your browsing history and recently visited posts</li>
+              <li><strong>Manage Collections:</strong> Organize your favorites by type (archive vs collaboration)</li>
+            </ul>
+
+            <div class="quick-links">
+              <a href="/browse-archive.html" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                Browse Archive
+              </a>
+              <a href="/browse-collab.html" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+                Browse Collaborations
+              </a>
+            </div>
+          </div>
+
+          <!-- Community Features Section -->
+          <div class="help-section">
+            <h2>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                <path d="M16 3.13a4 4 0 010 7.75"/>
+              </svg>
+              Community Features
+            </h2>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              Forum Discussions
+            </h3>
+            <ul>
+              <li><strong>Start Discussions:</strong> Create general discussions or comment on specific posts</li>
+              <li><strong>Ask Questions:</strong> Get help from the community about AI, prompting, or projects</li>
+              <li><strong>Share Insights:</strong> Discuss trends, techniques, and discoveries</li>
+              <li><strong>Connect:</strong> Build relationships with other AI enthusiasts and creators</li>
+            </ul>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              Collaboration Networking
+            </h3>
+            <ul>
+              <li><strong>Direct Contact:</strong> Email collaborators directly through their contact information</li>
+              <li><strong>Project Matching:</strong> Find projects that match your skills and interests</li>
+              <li><strong>Skill Sharing:</strong> Offer your expertise or find mentors in specific areas</li>
+              <li><strong>Team Building:</strong> Form teams for larger projects and initiatives</li>
+            </ul>
+
+            <div class="quick-links">
+              <a href="/forum.html" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                Join Forum
+              </a>
+              <a href="/collab.html" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+                Find Collaborations
+              </a>
+            </div>
+          </div>
+
+          <!-- Account Management Section -->
+          <div class="help-section">
+            <h2>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v6m0 6v6"/>
+              </svg>
+              Account Management
+            </h2>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              Profile Settings
+            </h3>
+            <ul>
+              <li><strong>Profile Information:</strong> Update your display name, bio, location, and website</li>
+              <li><strong>Avatar Upload:</strong> Upload a custom profile picture</li>
+              <li><strong>Privacy Settings:</strong> Control what information is visible to others</li>
+              <li><strong>Notification Preferences:</strong> Manage email notifications and updates</li>
+            </ul>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+              </svg>
+              Content Management
+            </h3>
+            <ul>
+              <li><strong>View Your Posts:</strong> See all your archive and collaboration posts in one place</li>
+              <li><strong>Edit Content:</strong> Update your published posts anytime</li>
+              <li><strong>Track Performance:</strong> Monitor views, downloads, and engagement</li>
+              <li><strong>Manage Favorites:</strong> Organize and review your saved content</li>
+            </ul>
+
+            <div class="quick-links">
+              <a href="/profile.html" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                My Profile
+              </a>
+              <a href="/settings.html" class="quick-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                  <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/>
+                </svg>
+                Settings
+              </a>
+            </div>
+          </div>
+
+          <!-- Best Practices Section -->
+          <div class="help-section">
+            <h2>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              Best Practices & Tips
+            </h2>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              Quality Content Guidelines
+            </h3>
+            <ul>
+              <li><strong>Be Descriptive:</strong> Use clear, specific titles that accurately describe your content</li>
+              <li><strong>Add Context:</strong> Include the AI model used and generation date when possible</li>
+              <li><strong>Tag Thoughtfully:</strong> Use relevant, specific tags that help others discover your content</li>
+              <li><strong>Share Prompts:</strong> When comfortable, share your prompts to help others learn</li>
+              <li><strong>Verify Accuracy:</strong> Review AI-generated content for factual accuracy before sharing</li>
+            </ul>
+
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                <path d="M16 3.13a4 4 0 010 7.75"/>
+              </svg>
+              Community Etiquette
+            </h3>
+            <ul>
+              <li><strong>Be Respectful:</strong> Treat all community members with kindness and respect</li>
+              <li><strong>Stay On Topic:</strong> Keep discussions relevant to AI, technology, and collaboration</li>
+              <li><strong>Give Credit:</strong> Acknowledge sources and collaborators appropriately</li>
+              <li><strong>Help Others:</strong> Share knowledge and assist newcomers when possible</li>
+              <li><strong>Follow Guidelines:</strong> Adhere to our community guidelines and terms of service</li>
+            </ul>
+
+            <div class="tip-box">
+              <strong>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 12l2 2 4-4"/>
+                  <path d="M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                Remember:
+              </strong>
+              <p>WikiDeep.io is about "Share the Insight, Spare the Energy" - by sharing your AI discoveries, you help others avoid redundant computation and accelerate collective learning!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Support Section - Properly Centered -->
+        <div class="support-section">
+          <h2>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            Need More Help?
+          </h2>
+          
+          <p>Can't find what you're looking for? Our support team and community are here to help!</p>
+          
+          <div class="support-options">
+            <div class="support-option">
+              <h4>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                Community Forum
+              </h4>
+              <p>Ask questions and get help from experienced community members.</p>
+              <a href="/forum.html" class="support-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                Ask Community
+              </a>
+            </div>
+            <div class="support-option">
+              <h4>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                Direct Support
+              </h4>
+              <p>Contact our support team directly for technical issues or account problems.</p>
+              <a href="mailto:ava.dsa25@proton.me" class="support-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                Contact Support
+              </a>
+            </div>
+            <div class="support-option">
+              <h4>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                </svg>
+                Documentation
+              </h4>
+              <p>Explore our comprehensive guides and contributor guidelines.</p>
+              <a href="/info-hub.html" class="support-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                </svg>
+                Read Guidelines
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer visible">
+      <div class="footer-links">
+        <a href="/forum.html">Forum</a>
+        <a href="/info-hub.html">Contributor Guidelines</a>
+        <a href="/info-hub.html#terms">Terms</a>
+        <a href="/info-hub.html#privacy-policy">Privacy Policy</a>
+        <a href="/info-hub.html#copyright-notice">Copyright Notice</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/support.html">Support WikiDeep.io</a>
+        <a href="/our-vision.html">Our Vision</a>
+      </div>
+    </div>
+  </body>
+</html>

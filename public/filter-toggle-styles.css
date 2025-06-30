@@ -1,0 +1,54 @@
+/* WikiDeep-styled Filter Toggle Button */
+.filters-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: #067273;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(6, 114, 115, 0.2);
+  margin-bottom: 15px;
+}
+
+.filters-toggle:hover {
+  background: #fac637;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(6, 114, 115, 0.3);
+  color: #067273;
+}
+
+.filters-toggle svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.filters-toggle:hover svg {
+  transform: rotate(15deg);
+}
+
+/* Style for when filters are visible */
+.filters-toggle.active {
+  background: #fac637;
+  color: #067273;
+  box-shadow: 0 3px 8px rgba(250, 198, 55, 0.3);
+}
+
+.filters-toggle.active:hover {
+  background: #f8c832;
+}
+
+/* Add responsive styling */
+@media (max-width: 768px) {
+  .filters-toggle {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WikiDeep.io</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style-responsive.css">
+    <link rel="stylesheet" href="/carousel-navigation-removal.css">
+    <link rel="stylesheet" href="/public/hide-forum-nav.css">
+    <link rel="stylesheet" href="/public/filter-toggle-styles.css">
+    <script type="module" src="/main.jsx"></script>
+    <script type="module" src="/src/footer-menu.js"></script>
+    <script type="module" src="/carousel-fix.js"></script>
+    <script type="module" src="/main.jsx-observer.js"></script>
+    <script type="module" src="/remove-carousel-navigation.js"></script>
+    <script type="module" src="/src/utils/pageIdentifier.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    
+    <!-- Archive Search Results Container -->
+    <div id="archive-results-container" class="archive-results-container">
+      <div class="search-results-header">
+        <h2>Archive Search Results</h2>
+        <button id="close-search" class="close-search-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div id="search-results" class="search-results">
+        <p class="empty-state">Enter a search term to find archive posts</p>
+      </div>
+      <div id="search-loading" class="search-loading" style="display: none;">
+        <p>Searching...</p>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <div class="footer-links">
+        <a href="/forum.html">Forum</a>
+        <a href="/info-hub.html">Contributor Guidelines</a>
+        <a href="/info-hub.html#terms">Terms</a>
+        <a href="/info-hub.html#privacy-policy">Privacy Policy</a>
+        <a href="/info-hub.html#copyright-notice">Copyright Notice</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/support.html">Support WikiDeep.io</a>
+        <a href="/our-vision.html">Our Vision</a>
+        <a href="https://www.youtube.com/watch?v=ZBG0qnbsdrI" target="_blank" rel="noopener noreferrer">Intro Video</a>
+      </div>
+    </div>
+    <div class="left-edge-trigger"></div>
+    <div class="menu-hamburger-indicator">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </div>
+    
+    <style>
+      /* Additional mobile improvements for main page */
+      @media (max-width: 768px) {
+        #app {
+          padding: 80px 10px 20px 10px;
+        }
+        
+        .search-results {
+          max-height: 60vh;
+          overflow-y: auto;
+        }
+      }
+    </style>
+  </body>
+</html>

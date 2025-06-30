@@ -1,0 +1,233 @@
+/* Carousel Responsiveness */
+
+/* This CSS file contains targeted fixes for the carousel and logo responsiveness
+   without affecting the rest of the layout */
+
+/* Main logo responsiveness */
+.menu-logo {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Target the carousel container specifically */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+  margin-bottom: 40px; /* Ensure space for footer */
+}
+
+/* Make carousel items responsive */
+.carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+  padding-bottom: 10px; /* Reduced from 20px */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  margin-bottom: 20px;
+}
+
+/* Customize scrollbar appearance - make it more transparent and smaller */
+.carousel-track::-webkit-scrollbar {
+  height: 6px; /* Smaller height */
+}
+
+.carousel-track::-webkit-scrollbar-track {
+  background: rgba(6, 114, 115, 0.05); /* Very transparent track */
+}
+
+.carousel-track::-webkit-scrollbar-thumb {
+  background-color: rgba(6, 114, 115, 0.2); /* More transparent thumb */
+  border-radius: 10px;
+}
+
+.carousel-track::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(6, 114, 115, 0.3); /* Slightly more visible on hover */
+}
+
+/* Firefox scrollbar styling */
+.carousel-track {
+  scrollbar-width: thin; /* "thin" is the smallest option in Firefox */
+  scrollbar-color: rgba(6, 114, 115, 0.2) rgba(6, 114, 115, 0.05); /* thumb and track colors */
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  width: 280px; /* Default width */
+  max-width: 80vw; /* Maximum width based on viewport */
+  scroll-snap-align: start;
+}
+
+/* Responsive adjustments based on screen size */
+@media (max-width: 1024px) {
+  .carousel-item {
+    width: 250px; 
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-item {
+    width: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-item {
+    width: 200px;
+  }
+}
+
+/* FOOTER HAMBURGER MENU STYLING */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: transparent;
+  transition: all 0.3s ease;
+  display: block !important; /* Always show footer */
+  pointer-events: auto !important; /* Ensure it's clickable */
+}
+
+/* Footer links container */
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, padding 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  padding: 0 15px;
+}
+
+/* Footer links styling */
+.footer-links a {
+  color: #067273;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 8px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.footer-links a:hover {
+  color: #fac637;
+  background-color: rgba(6, 114, 115, 0.05);
+}
+
+/* Footer hamburger styling */
+.footer-hamburger {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1001;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  padding: 5px;
+}
+
+.footer-hamburger:hover {
+  background-color: white;
+  box-shadow: 0 4px 15px rgba(6, 114, 115, 0.3);
+}
+
+.footer-hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* This makes clicks pass through to parent */
+}
+
+.footer-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  margin: 3px 0;
+  background-color: #067273;
+  transition: all 0.3s ease;
+  pointer-events: none; /* This makes clicks pass through to parent */
+}
+
+/* Footer open state */
+.footer.open .footer-links {
+  max-height: 200px;
+  padding: 15px;
+  padding-bottom: 60px;
+}
+
+.footer.open .footer-hamburger {
+  background-color: #067273;
+}
+
+.footer.open .footer-line {
+  background-color: white;
+}
+
+.footer.open .footer-line:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.footer.open .footer-line:nth-child(2) {
+  opacity: 0;
+}
+
+.footer.open .footer-line:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Additional fixes for iOS */
+@supports (-webkit-touch-callout: none) {
+  .footer {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  
+  .footer-hamburger {
+    bottom: calc(10px + env(safe-area-inset-bottom, 0));
+  }
+}
+
+/* Make sure content doesn't get hidden behind the footer */
+body {
+  padding-bottom: 50px !important;
+}
+
+/* When footer is open, add extra space to prevent content from being hidden */
+.footer.open ~ div:not(.footer-hamburger) {
+  margin-bottom: 200px;
+}
+
+/* Fix for footer on specific pages */
+.footer.visible {
+  display: block !important;
+  pointer-events: auto !important; 
+}
+
+/* Ensure the footer hamburger is always visible and clickable */
+.footer-hamburger {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}

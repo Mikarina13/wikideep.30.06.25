@@ -1,0 +1,54 @@
+/* carousel-navigation-removal.css */
+/* This file specifically targets and removes carousel navigation arrows */
+
+/* Target the navigation arrows that appear in the carousel */
+.carousel-navigation, 
+.slick-arrow,
+.carousel-arrow,
+.carousel-next,
+.carousel-prev,
+.slick-prev,
+.slick-next,
+button[aria-label*="previous"],
+button[aria-label*="next"],
+div[class*="arrow"],
+div[class*="navigation"],
+[class*="carousel-pagination"],
+[class*="carousel-dots"],
+.carousel-indicators,
+.carousel-buttons,
+.carousel-controls {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide the specific elements from your screenshot */
+.slick-dots,
+[role="tablist"],
+ul[class*="dots"],
+ol[class*="dots"],
+div[class*="dots"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Ensure carousel container and items remain visible */
+.carousel-container {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.carousel-track {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.carousel-item {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}

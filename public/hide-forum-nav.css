@@ -1,0 +1,5 @@
+/* CSS to hide the Forum navigation item on specific pages */
+body[data-page="archive"] .menu-header .nav-links > a.nav-item.forum-nav,
+body[data-page="collab"] .menu-header .nav-links > a.nav-item.forum-nav {
+  display: none !important;
+}

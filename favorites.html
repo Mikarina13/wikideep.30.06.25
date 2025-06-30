@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Favorites - WikiDeep.io</title>
+    <link rel="stylesheet" href="/style.css">
+    <script type="module" src="src/favorites.js"></script>
+    <script type="module" src="/src/footer-menu.js"></script>
+    <style>
+      .favorites-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 900px;
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: hidden;
+        background: white;
+        padding: 0;
+        border-radius: 12px;
+        z-index: 1100;
+        box-shadow: 
+          0 0 15px rgba(6, 114, 115, 0.35),
+          0 0 30px rgba(6, 114, 115, 0.25),
+          0 0 45px rgba(6, 114, 115, 0.15),
+          0 0 60px rgba(6, 114, 115, 0.1);
+        animation: formGlow 2s ease-in-out infinite alternate;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .favorites-header-title {
+        background-color: #07717c;
+        color: white;
+        padding: 15px 0;
+        text-align: center;
+        width: 100%;
+        border-radius: 12px 12px 0 0;
+        z-index: 10;
+      }
+      
+      .favorites-header-title h1 {
+        color: white;
+        margin: 0;
+        font-size: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+      
+      /* Close button styles */
+      .favorites-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        width: 24px;
+        height: 24px;
+        background: transparent;
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 20;
+        transition: transform 0.2s ease;
+      }
+      
+      .favorites-close-btn:hover {
+        transform: scale(1.2);
+      }
+      
+      .favorites-close-btn svg {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+      }
+
+      .modal-scroll-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+        position: relative;
+        background: white;
+      }
+      
+      .favorites-filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .filter-button {
+        padding: 12px 20px;
+        background: white;
+        color: #067273;
+        border: 1px solid rgba(6, 114, 115, 0.2);
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .filter-button:hover {
+        background: rgba(6, 114, 115, 0.05);
+        border-color: rgba(6, 114, 115, 0.3);
+      }
+      
+      .filter-button.active {
+        background: #fac637;
+        color: #07717c;
+        border-color: #fac637;
+      }
+      
+      .favorites-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+      
+      .favorite-item {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid rgba(6, 114, 115, 0.1);
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        position: relative;
+      }
+      
+      .favorite-item:hover {
+        border-color: #fac637;
+        box-shadow: 0 4px 16px rgba(6, 114, 115, 0.1);
+        transform: translateY(-2px);
+      }
+      
+      .favorite-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+      
+      .favorite-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: rgba(6, 114, 115, 0.1);
+        color: #067273;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .remove-favorite {
+        background: none;
+        border: none;
+        color: #dc3545;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        opacity: 0.7;
+      }
+      
+      .remove-favorite:hover {
+        background: rgba(220, 53, 69, 0.1);
+        opacity: 1;
+      }
+      
+      .favorite-item h4 {
+        color: #067273;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        line-height: 1.3;
+      }
+      
+      .favorite-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(6, 114, 115, 0.7);
+        font-size: 13px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      
+      .favorite-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      
+      .favorite-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      
+      .tag {
+        background: rgba(6, 114, 115, 0.1);
+        color: #067273;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+      
+      .favorite-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(6, 114, 115, 0.1);
+      }
+      
+      .view-favorite-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: #067273;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+      
+      .view-favorite-btn:hover {
+        background: #045c66;
+        transform: translateY(-1px);
+      }
+      
+      .favorite-date {
+        color: rgba(6, 114, 115, 0.6);
+        font-size: 12px;
+      }
+      
+      .empty-favorites {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+      }
+      
+      .empty-favorites svg {
+        margin-bottom: 20px;
+        opacity: 0.5;
+      }
+      
+      .empty-favorites h3 {
+        color: #067273;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      
+      .empty-favorites p {
+        margin: 0 0 20px 0;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+      
+      .browse-content-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: #fac637;
+        color: #067273;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+      
+      .browse-content-btn:hover {
+        background: #f8c832;
+        transform: translateY(-1px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="menu-header">
+      <img src="https://i.imgur.com/zcLQ3gB.png" alt="Menu Logo" class="menu-logo">
+      <div class="nav-links">
+        <div class="nav-container">
+          <a href="/publish.html" class="nav-item publish-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14"/>
+              <path d="M5 12h14"/>
+            </svg>
+            Publish
+          </a>
+          <a href="/index.html" class="nav-item archives-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4v16a2 2 0 002 2h12a2 2 0 002-2V8.342a2 2 0 00-.602-1.43l-4.44-4.342A2 2 0 0013.56 2H6a2 2 0 00-2 2z"/>
+              <path d="M14 2v4a2 2 0 002 2h4"/>
+            </svg>
+            ARCHIVES
+          </a>
+          <a href="/collab.html" class="nav-item collab-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+              <path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            COLLAB
+          </a>
+        </div>
+        <a href="/forum.html" class="nav-item forum-nav">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Forum
+        </a>
+      </div>
+    </div>
+    <div class="menu-overlay"></div>
+    <div class="menu-options info-menu"></div>
+    <div class="left-edge-trigger"></div>
+    <div class="menu-hamburger-indicator">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </div>
+
+    <div class="favorites-container">
+      <div class="favorites-header-title">
+        <h1>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          My Favorites
+        </h1>
+        <!-- Add close button -->
+        <button class="favorites-close-btn" id="favorites-close-btn" aria-label="Close favorites">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="modal-scroll-content">
+        <div class="favorites-filters">
+          <button class="filter-button active" data-filter="all">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            All Favorites
+          </button>
+          <button class="filter-button" data-filter="archive">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            Archive Posts
+          </button>
+          <button class="filter-button" data-filter="collab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+              <path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            Collab Posts
+          </button>
+        </div>
+
+        <div id="favorites-content">
+          <!-- Sample favorites content -->
+          <div class="favorites-grid">
+            <div class="favorite-item" data-type="archive">
+              <div class="favorite-header">
+                <div class="favorite-type">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                  Archive Post
+                </div>
+                <button class="remove-favorite" title="Remove from favorites">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <h4>Advanced Machine Learning Techniques for Natural Language Processing</h4>
+              <div class="favorite-meta">
+                <span>📅 Saved 2 days ago</span>
+                <span>•</span>
+                <span>🤖 AI Model: GPT-4</span>
+              </div>
+              <div class="favorite-description">
+                A comprehensive analysis of transformer architectures, attention mechanisms, and their applications in modern NLP tasks. Covers BERT, GPT models, and emerging techniques for better language understanding.
+              </div>
+              <div class="favorite-tags">
+                <span class="tag">machine learning</span>
+                <span class="tag">nlp</span>
+                <span class="tag">transformers</span>
+              </div>
+              <div class="favorite-actions">
+                <a href="#" class="view-favorite-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h6v6"/>
+                    <path d="M10 14L21 3"/>
+                    <path d="M21 9v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11"/>
+                  </svg>
+                  View Post
+                </a>
+                <span class="favorite-date">Added on Dec 8, 2024</span>
+              </div>
+            </div>
+
+            <div class="favorite-item" data-type="collab">
+              <div class="favorite-header">
+                <div class="favorite-type">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 010 7.75"/>
+                  </svg>
+                  Collab Post
+                </div>
+                <button class="remove-favorite" title="Remove from favorites">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <h4>AI Ethics Research Team - Looking for Collaborators</h4>
+              <div class="favorite-meta">
+                <span>📅 Saved 5 days ago</span>
+                <span>•</span>
+                <span>🔍 Looking for collaboration</span>
+              </div>
+              <div class="favorite-description">
+                Seeking researchers passionate about responsible AI development. Focus on bias detection, fairness metrics, and ethical AI frameworks for real-world deployment scenarios.
+              </div>
+              <div class="favorite-tags">
+                <span class="tag">ai ethics</span>
+                <span class="tag">research</span>
+                <span class="tag">collaboration</span>
+              </div>
+              <div class="favorite-actions">
+                <a href="#" class="view-favorite-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h6v6"/>
+                    <path d="M10 14L21 3"/>
+                    <path d="M21 9v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11"/>
+                  </svg>
+                  View Post
+                </a>
+                <span class="favorite-date">Added on Dec 5, 2024</span>
+              </div>
+            </div>
+
+            <div class="favorite-item" data-type="archive">
+              <div class="favorite-header">
+                <div class="favorite-type">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                  Archive Post
+                </div>
+                <button class="remove-favorite" title="Remove from favorites">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <h4>Quantum Computing Applications in Machine Learning</h4>
+              <div class="favorite-meta">
+                <span>📅 Saved 1 week ago</span>
+                <span>•</span>
+                <span>🤖 AI Model: Claude 3</span>
+              </div>
+              <div class="favorite-description">
+                Exploring the intersection of quantum computing and AI. Quantum machine learning algorithms, quantum neural networks, and computational advantages over classical systems.
+              </div>
+              <div class="favorite-tags">
+                <span class="tag">quantum computing</span>
+                <span class="tag">machine learning</span>
+                <span class="tag">research</span>
+              </div>
+              <div class="favorite-actions">
+                <a href="#" class="view-favorite-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 3h6v6"/>
+                    <path d="M10 14L21 3"/>
+                    <path d="M21 9v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11"/>
+                  </svg>
+                  View Post
+                </a>
+                <span class="favorite-date">Added on Dec 1, 2024</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state (hidden by default, shown when no favorites) -->
+        <div id="empty-favorites" class="empty-favorites" style="display: none;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#067273" stroke-width="1">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <h3>No favorites yet</h3>
+          <p>Start adding posts to your favorites by clicking the heart icon on archive and collab posts you find interesting.</p>
+          <a href="/index.html" class="browse-content-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            Browse Archive
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer visible">
+      <div class="footer-links">
+        <a href="/forum.html">Forum</a>
+        <a href="/info-hub.html">Contributor Guidelines</a>
+        <a href="/info-hub.html#terms">Terms</a>
+        <a href="/info-hub.html#privacy-policy">Privacy Policy</a>
+        <a href="/info-hub.html#copyright-notice">Copyright Notice</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/support.html">Support WikiDeep.io</a>
+        <a href="/our-vision.html">Our Vision</a>
+      </div>
+    </div>
+  </body>
+</html>

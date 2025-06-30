@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publish - WikiDeep.io</title>
+    <link rel="stylesheet" href="/style.css">
+    <script type="module" src="/publish.js"></script>
+    <script type="module" src="/src/footer-menu.js"></script>
+    <style>
+      .publish-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 800px;
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: hidden;
+        background: white;
+        padding: 0;
+        border-radius: 12px;
+        z-index: 1100;
+        box-shadow: 
+          0 0 15px rgba(6, 114, 115, 0.35),
+          0 0 30px rgba(6, 114, 115, 0.25),
+          0 0 45px rgba(6, 114, 115, 0.15),
+          0 0 60px rgba(6, 114, 115, 0.1);
+        animation: formGlow 2s ease-in-out infinite alternate;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .publish-header-title {
+        background-color: #07717c;
+        color: white;
+        padding: 15px 0;
+        text-align: center;
+        width: 100%;
+        border-radius: 12px 12px 0 0;
+        z-index: 10;
+      }
+      
+      .publish-header-title h1 {
+        color: white;
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+      }
+      
+      /* Close button styles */
+      .publish-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        width: 24px;
+        height: 24px;
+        background: transparent;
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 20;
+        transition: transform 0.2s ease;
+      }
+      
+      .publish-close-btn:hover {
+        transform: scale(1.2);
+      }
+      
+      .publish-close-btn svg {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+      }
+      
+      .publish-tabs {
+        display: flex;
+        gap: 2px;
+        margin-bottom: 0;
+        justify-content: center;
+        background: rgba(6, 114, 115, 0.05);
+        border-radius: 0;
+        padding: 3px;
+        width: 100%;
+        z-index: 5;
+      }
+      
+      .tab-button {
+        flex: 1;
+        padding: 12px 20px;
+        background: transparent;
+        color: #07717c;
+        border: none;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-radius: 6px;
+      }
+      
+      .tab-button:hover {
+        background: rgba(250, 198, 55, 0.15);
+      }
+      
+      .tab-button.active {
+        background: #fac637;
+        color: #07717c;
+        font-weight: 600;
+      }
+      
+      .modal-scroll-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+        position: relative;
+        background: white;
+      }
+      
+      .publish-form {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        display: none;
+        border: 1px solid rgba(6, 114, 115, 0.1);
+      }
+      
+      .publish-form.active {
+        display: block;
+      }
+      
+      .publish-form h2 {
+        color: #07717c;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 24px;
+        text-align: center;
+      }
+      
+      .form-group {
+        margin-bottom: 20px;
+      }
+      
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #07717c;
+        font-weight: 600;
+        font-size: 16px;
+      }
+      
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid rgba(6, 114, 115, 0.3);
+        border-radius: 6px;
+        font-size: 16px;
+        transition: all 0.2s ease;
+        color: #333;
+        background: rgba(255, 255, 255, 0.98);
+      }
+      
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #07717c;
+        box-shadow: 0 0 0 3px rgba(6, 114, 115, 0.15);
+        background: white;
+      }
+      
+      .submit-button {
+        width: 100%;
+        padding: 16px;
+        background: #fac637;
+        color: #07717c;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .submit-button:hover:not(:disabled) {
+        background: #f8c832;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(250, 198, 55, 0.4);
+      }
+      
+      .submit-button:disabled {
+        background: #ccc;
+        color: #888;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .form-section {
+        background: rgba(250, 198, 55, 0.08);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(250, 198, 55, 0.3);
+      }
+
+      .form-section h3 {
+        color: #07717c;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .help-text {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+
+      .content-choice {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        justify-content: center;
+        background: rgba(6, 114, 115, 0.05);
+        border-radius: 8px;
+        padding: 3px;
+      }
+
+      .choice-button {
+        flex: 1;
+        padding: 12px 20px;
+        background: transparent;
+        color: #07717c;
+        border: none;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-radius: 6px;
+        text-align: center;
+      }
+
+      .choice-button:hover {
+        background: rgba(250, 198, 55, 0.15);
+      }
+
+      .choice-button.active {
+        background: #fac637;
+        color: #07717c;
+        font-weight: 600;
+      }
+
+      .content-section {
+        display: none;
+      }
+
+      .content-section.active {
+        display: block;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      @media (max-width: 600px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Hide tabs completely when only one form is shown */
+      .tabs-hidden .publish-tabs {
+        display: none;
+      }
+
+      /* Enhanced Tag System Styles */
+      .tag-input-container {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+      }
+
+      .tag-input-group {
+        flex: 1;
+      }
+
+      .tag-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid rgba(6, 114, 115, 0.3);
+        border-radius: 6px;
+        font-size: 16px;
+        transition: all 0.2s ease;
+        color: #333;
+        background: rgba(255, 255, 255, 0.98);
+      }
+
+      .tag-input:focus {
+        outline: none;
+        border-color: #07717c;
+        box-shadow: 0 0 0 3px rgba(6, 114, 115, 0.15);
+        background: white;
+      }
+
+      .add-tag-btn {
+        padding: 12px 20px;
+        background: #fac637;
+        color: #07717c;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .add-tag-btn:hover:not(:disabled) {
+        background: #f8c832;
+        transform: translateY(-1px);
+      }
+
+      .add-tag-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .tags-display {
+        margin-top: 15px;
+        min-height: 50px;
+        padding: 15px;
+        border: 2px dashed rgba(6, 114, 115, 0.4);
+        border-radius: 8px;
+        background: rgba(6, 114, 115, 0.03);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: flex-start;
+      }
+
+      .tags-display.empty {
+        justify-content: center;
+        align-items: center;
+        color: rgba(6, 114, 115, 0.7);
+        font-style: italic;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .tag-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #067273, #0a8a8c);
+        color: white;
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        animation: tagAppear 0.3s ease;
+        box-shadow: 0 2px 6px rgba(6, 114, 115, 0.3);
+      }
+
+      .tag-remove {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 2px;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+      }
+
+      .tag-remove:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .tag-count {
+        font-size: 12px;
+        color: rgba(6, 114, 115, 0.8);
+        margin-top: 8px;
+        font-style: italic;
+        font-weight: 500;
+      }
+
+      @keyframes tagAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .tag-error {
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 4px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        font-weight: 500;
+      }
+
+      .tag-error.visible {
+        opacity: 1;
+      }
+
+      /* Enhanced Required Field Indicator */
+      .form-group label[for$="-tag-input"]::after,
+      .form-group label[required]::after {
+        content: " *";
+        color: #dc3545;
+        font-weight: 700;
+      }
+
+      /* Prompt Privacy Styles */
+      .prompt-privacy {
+        background: rgba(250, 198, 55, 0.08);
+        border: 1px solid rgba(250, 198, 55, 0.3);
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 15px;
+      }
+
+      .privacy-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .privacy-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+        padding: 12px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+      }
+
+      .privacy-option:hover {
+        background: rgba(6, 114, 115, 0.05);
+        border-color: rgba(6, 114, 115, 0.1);
+      }
+
+      .privacy-option.selected {
+        background: rgba(6, 114, 115, 0.1);
+        border-color: rgba(6, 114, 115, 0.2);
+      }
+
+      .privacy-option input[type="radio"] {
+        margin-top: 2px;
+        width: 18px;
+        height: 18px;
+        accent-color: #067273;
+      }
+
+      .privacy-option-content {
+        flex: 1;
+      }
+
+      .privacy-option-title {
+        font-weight: 600;
+        color: #067273;
+        margin-bottom: 4px;
+        font-size: 15px;
+      }
+
+      .privacy-option-description {
+        color: #666;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .privacy-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+        color: #067273;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      /* Smooth transition for hiding/showing prompt field */
+      .form-group {
+        transition: all 0.3s ease;
+      }
+
+      .form-group[style*="display: none"] {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      
+      /* Modified styles for prompt disabled state */
+      .prompt-disabled {
+        position: relative;
+        opacity: 0.7;
+        pointer-events: none;
+      }
+      
+      .prompt-disabled::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.5);
+        z-index: 5;
+      }
+      
+      .prompt-disabled::after {
+        content: '🔒';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 24px;
+        z-index: 10;
+      }
+      
+      .prompt-textarea-container {
+        position: relative;
+      }
+
+      /* Warning for missing tags */
+      .tags-warning {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        border-radius: 6px;
+        padding: 12px;
+        margin-top: 10px;
+        color: #dc3545;
+        font-size: 14px;
+        font-weight: 500;
+        display: none;
+      }
+
+      .tags-warning.visible {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="menu-header">
+      <img src="https://i.imgur.com/zcLQ3gB.png" alt="Menu Logo" class="menu-logo">
+      <div class="nav-links">
+        <div class="nav-container">
+          <a href="/publish.html" class="nav-item publish-nav active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14"/>
+              <path d="M5 12h14"/>
+            </svg>
+            Publish
+          </a>
+          <a href="/index.html" class="nav-item archives-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4v16a2 2 0 002 2h12a2 2 0 002-2V8.342a2 2 0 00-.602-1.43l-4.44-4.342A2 2 0 0013.56 2H6a2 2 0 00-2 2z"/>
+              <path d="M14 2v4a2 2 0 002 2h4"/>
+            </svg>
+            ARCHIVES
+          </a>
+          <a href="/collab.html" class="nav-item collab-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+              <path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            COLLAB
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="menu-overlay"></div>
+    <div class="menu-options"></div>
+    <div class="left-edge-trigger"></div>
+    <div class="menu-hamburger-indicator">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </div>
+
+    <div class="publish-container" id="publish-container">
+      <div class="publish-header-title">
+        <h1 id="publish-title">Publish Content</h1>
+        <!-- Add close button -->
+        <button class="publish-close-btn" id="publish-close-btn" aria-label="Close publish form">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="publish-tabs" id="publish-tabs">
+        <button class="tab-button active" data-tab="archive" id="archive-tab">Archive</button>
+        <button class="tab-button" data-tab="collab" id="collab-tab">Collab</button>
+      </div>
+
+      <div class="modal-scroll-content">
+        <form id="archive-form" class="publish-form active">
+          <h2>Share AI-Generated Insight</h2>
+          
+          <!-- Common Fields at Top -->
+          <div class="form-group">
+            <label for="archive-title">Title *</label>
+            <input type="text" id="archive-title" required placeholder="A descriptive title for your insight">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="archive-model">AI Model Used *</label>
+              <select id="archive-model" required>
+                <option value="">Select AI Model</option>
+                <optgroup label="OpenAI">
+                  <option value="gpt-4">GPT-4</option>
+                  <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                  <option value="gpt-4o">GPT-4o</option>
+                  <option value="gpt-4o-pro">GPT-4o Pro</option>
+                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                  <option value="gpt-3">GPT-3</option>
+                  <option value="o1-preview">o1-preview</option>
+                  <option value="o1-mini">o1-mini</option>
+                  <option value="o1-pro">o1-pro</option>
+                  <option value="o3-mini">o3-mini</option>
+                  <option value="chatgpt">ChatGPT</option>
+                </optgroup>
+                <optgroup label="Anthropic">
+                  <option value="claude-3-opus">Claude 3 Opus</option>
+                  <option value="claude-3-sonnet">Claude 3 Sonnet</option>
+                  <option value="claude-3-haiku">Claude 3 Haiku</option>
+                  <option value="claude-4-opus">Claude 4 Opus</option>
+                  <option value="claude-4-sonnet">Claude 4 Sonnet</option>
+                  <option value="claude-2">Claude 2</option>
+                </optgroup>
+                <optgroup label="Google">
+                  <option value="gemini-pro">Gemini Pro</option>
+                  <option value="gemini-ultra">Gemini Ultra</option>
+                  <option value="gemini-1.5">Gemini 1.5</option>
+                  <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                  <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                  <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                  <option value="gemma-7b">Gemma 7B</option>
+                  <option value="gemma-2b">Gemma 2B</option>
+                  <option value="bard">Bard</option>
+                  <option value="palm">PaLM</option>
+                </optgroup>
+                <optgroup label="Meta">
+                  <option value="llama-2">Llama 2</option>
+                  <option value="llama-3">Llama 3</option>
+                  <option value="code-llama">Code Llama</option>
+                </optgroup>
+                <optgroup label="Microsoft">
+                  <option value="copilot">Copilot</option>
+                  <option value="bing-chat">Bing Chat</option>
+                </optgroup>
+                <optgroup label="Alibaba">
+                  <option value="qwen">Qwen</option>
+                  <option value="qwen-turbo">Qwen Turbo</option>
+                  <option value="qwen-max">Qwen Max</option>
+                </optgroup>
+                <optgroup label="Mistral AI">
+                  <option value="mistral-large">Mistral Large</option>
+                  <option value="mistral-medium">Mistral Medium</option>
+                  <option value="mistral-small">Mistral Small</option>
+                  <option value="mixtral-8x7b">Mixtral 8x7B</option>
+                </optgroup>
+                <optgroup label="xAI">
+                  <option value="grok-1">Grok-1</option>
+                  <option value="grok-1.5">Grok-1.5</option>
+                  <option value="grok-2">Grok-2</option>
+                  <option value="grok-3">Grok-3</option>
+                </optgroup>
+                <optgroup label="DeepSeek">
+                  <option value="deepseek-v2">DeepSeek V2</option>
+                  <option value="deepseek-r1">DeepSeek-R1</option>
+                  <option value="deepseek-coder">DeepSeek Coder</option>
+                </optgroup>
+                <optgroup label="Other">
+                  <option value="perplexity">Perplexity</option>
+                  <option value="you.com">You.com</option>
+                  <option value="phind">Phind</option>
+                  <option value="claude-instant">Claude Instant</option>
+                  <option value="other">Other</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="archive-generation-date">Date of AI Generation</label>
+              <input type="date" id="archive-generation-date">
+            </div>
+          </div>
+
+          <!-- Prompt Field (can be hidden based on privacy setting) -->
+          <div class="form-group">
+            <label for="archive-prompt">Original Prompt *</label>
+            <textarea id="archive-prompt" rows="3" required placeholder="Share the prompt(s) you used"></textarea>
+            
+            <!-- Prompt Privacy Options -->
+            <div class="prompt-privacy">
+              <div class="privacy-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <circle cx="12" cy="16" r="1"/>
+                  <path d="m7 11 0-7a5 5 0 0 1 10 0v7"/>
+                </svg>
+                Prompt Sharing Preferences
+              </div>
+              <div class="privacy-options">
+                <label class="privacy-option selected">
+                  <input type="radio" name="prompt-privacy" value="public" checked>
+                  <div class="privacy-option-content">
+                    <div class="privacy-option-title">🌍 Share prompt publicly</div>
+                    <div class="privacy-option-description">Others can see your prompt to learn from your prompting techniques. This helps the community improve their AI interactions.</div>
+                  </div>
+                </label>
+                <label class="privacy-option">
+                  <input type="radio" name="prompt-privacy" value="private">
+                  <div class="privacy-option-content">
+                    <div class="privacy-option-title">🔒 Keep prompt private</div>
+                    <div class="privacy-option-description">Your prompt will be saved for your reference but not displayed publicly. Others will only see the AI-generated content and your title.</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Choice - SWITCHED ORDER -->
+          <div class="content-choice">
+            <button type="button" class="choice-button active" data-choice="paste">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              </svg>
+              Paste Content
+            </button>
+            <button type="button" class="choice-button" data-choice="link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+              Share Direct Link
+            </button>
+          </div>
+
+          <!-- Paste Content Section - NOW DEFAULT -->
+          <div id="paste-content" class="content-section active">
+            <div class="form-section">
+              <h3>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                </svg>
+                Paste AI Content
+              </h3>
+              <p class="help-text">Copy and paste the AI-generated content directly here.</p>
+              
+              <div class="form-group">
+                <label for="archive-content">AI-Generated Content *</label>
+                <textarea id="archive-content" rows="10" placeholder="Paste the AI-generated content here"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Link Content Section - NOW SECOND -->
+          <div id="link-content" class="content-section">
+            <div class="form-section">
+              <h3>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                Shareable Link
+              </h3>
+              <p class="help-text">Paste your shareable link from Google Docs, ChatGPT, or other AI platforms. This will be embedded directly for viewers.</p>
+              
+              <div class="form-group">
+                <label for="archive-embed-url">URL Link *</label>
+                <input type="url" id="archive-embed-url" placeholder="https://docs.google.com/document/... or https://chatgpt.com/s/...">
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Tags Section -->
+          <div class="form-group">
+            <label for="archive-tag-input">Tags</label>
+            <div class="tag-input-container">
+              <div class="tag-input-group">
+                <input type="text" id="archive-tag-input" class="tag-input" placeholder="Type a tag and click Add (e.g., machine learning)">
+                <div class="tag-error" id="archive-tag-error"></div>
+              </div>
+              <button type="button" id="archive-add-tag" class="add-tag-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Add
+              </button>
+            </div>
+            <div id="archive-tags-display" class="tags-display empty">
+              Add at least one tag to categorize your content before publishing.
+            </div>
+            <div class="tag-count" id="archive-tag-count">0 tags added</div>
+            <div class="tags-warning" id="archive-tags-warning">
+              ⚠️ You must add at least one tag before you can publish your content.
+            </div>
+          </div>
+
+          <button type="submit" class="submit-button" id="archive-submit-btn" disabled>Publish to Archive</button>
+        </form>
+
+        <form id="collab-form" class="publish-form">
+          <h2>Post Collaboration Request/Offer</h2>
+
+          <div class="form-group">
+            <label for="collab-type">Type *</label>
+            <select id="collab-type" required>
+              <option value="">Select Type</option>
+              <option value="request">Looking for Collaboration</option>
+              <option value="offer">Offering to Collaborate</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="collab-title">Title *</label>
+            <input type="text" id="collab-title" required placeholder="Brief title for your post">
+          </div>
+
+          <div class="form-group">
+            <label for="collab-description">Description *</label>
+            <textarea id="collab-description" rows="6" required placeholder="Describe your project or skills"></textarea>
+          </div>
+
+          <!-- Interactive Tags Section for Collab -->
+          <div class="form-group">
+            <label for="collab-tag-input">Tags</label>
+            <div class="tag-input-container">
+              <div class="tag-input-group">
+                <input type="text" id="collab-tag-input" class="tag-input" placeholder="Type a tag and click Add (e.g., web development)">
+                <div class="tag-error" id="collab-tag-error"></div>
+              </div>
+              <button type="button" id="collab-add-tag" class="add-tag-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Add
+              </button>
+            </div>
+            <div id="collab-tags-display" class="tags-display empty">
+              Add at least one tag to categorize your collaboration before posting.
+            </div>
+            <div class="tag-count" id="collab-tag-count">0 tags added</div>
+            <div class="tags-warning" id="collab-tags-warning">
+              ⚠️ You must add at least one tag before you can post your collaboration.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="collab-contact">Contact Email *</label>
+            <input type="email" id="collab-contact" required placeholder="Your contact email">
+          </div>
+
+          <button type="submit" class="submit-button" id="collab-submit-btn" disabled>Post to Collab</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

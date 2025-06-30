@@ -1,0 +1,353 @@
+/* WikiDeep Filter Section Styling - Comprehensive Styling for All Filter Components */
+
+/* Main Filters Section Container */
+.filters-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  margin-bottom: 40px;
+  border: 1px solid rgba(6, 114, 115, 0.15);
+  box-shadow: 
+    0 4px 15px rgba(6, 114, 115, 0.08),
+    0 2px 6px rgba(6, 114, 115, 0.04);
+  transition: all 0.3s ease;
+}
+
+.filters-section:hover {
+  box-shadow: 
+    0 8px 25px rgba(6, 114, 115, 0.12),
+    0 4px 10px rgba(6, 114, 115, 0.06);
+  border-color: rgba(6, 114, 115, 0.25);
+}
+
+/* Filters Title */
+.filters-title {
+  color: #067273;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.filters-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #067273, #fac637);
+  border-radius: 2px;
+}
+
+/* Filters Grid Layout */
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+/* Individual Filter Group */
+.filter-group {
+  background: #ffffff;
+  padding: 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(6, 114, 115, 0.12);
+  box-shadow: 
+    0 2px 8px rgba(6, 114, 115, 0.06),
+    0 1px 4px rgba(6, 114, 115, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.filter-group:hover {
+  transform: translateY(-3px);
+  border-color: rgba(250, 198, 55, 0.3);
+  box-shadow: 
+    0 6px 20px rgba(6, 114, 115, 0.1),
+    0 3px 10px rgba(250, 198, 55, 0.06);
+}
+
+/* Filter Group Header */
+.filter-group h4 {
+  color: #067273;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid rgba(6, 114, 115, 0.1);
+  padding-bottom: 12px;
+  position: relative;
+}
+
+.filter-group h4::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 40px;
+  height: 2px;
+  background-color: #fac637;
+}
+
+/* Filter Options Container */
+.filter-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+/* Individual Filter Option */
+.filter-option {
+  margin-bottom: 10px;
+}
+
+.filter-option label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  padding: 8px 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  border-radius: 8px;
+  user-select: none;
+}
+
+.filter-option label:hover {
+  color: #067273;
+  background: rgba(6, 114, 115, 0.05);
+}
+
+.filter-option input[type="checkbox"],
+.filter-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #067273;
+  cursor: pointer;
+}
+
+/* Range Inputs Styling */
+.filter-range {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-range input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 2px solid rgba(6, 114, 115, 0.2);
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+}
+
+.filter-range input:focus {
+  outline: none;
+  border-color: #067273;
+  box-shadow: 0 0 0 3px rgba(6, 114, 115, 0.1);
+}
+
+.filter-range span {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+/* Date Inputs */
+.date-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.date-inputs input {
+  padding: 12px 15px;
+  border: 2px solid rgba(6, 114, 115, 0.2);
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+}
+
+.date-inputs input:focus {
+  outline: none;
+  border-color: #067273;
+  box-shadow: 0 0 0 3px rgba(6, 114, 115, 0.1);
+}
+
+/* Tags Filter Section */
+.tags-filter-group {
+  grid-column: 1 / -1;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 14px;
+  border: 1px solid rgba(6, 114, 115, 0.12);
+  box-shadow: 
+    0 2px 8px rgba(6, 114, 115, 0.06),
+    0 1px 4px rgba(6, 114, 115, 0.04);
+}
+
+.tag-search-container {
+  margin-bottom: 20px;
+}
+
+.tag-search input {
+  width: 100%;
+  max-width: 450px;
+  padding: 14px 20px;
+  border: 2px solid rgba(6, 114, 115, 0.2);
+  border-radius: 12px;
+  font-size: 16px;
+  margin: 0 auto;
+  display: block;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+}
+
+.tag-search input:focus {
+  outline: none;
+  border-color: #067273;
+  box-shadow: 0 0 0 3px rgba(6, 114, 115, 0.1);
+}
+
+/* Popular Tags Container */
+.popular-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 18px;
+  min-height: 60px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(6, 114, 115, 0.03), rgba(250, 198, 55, 0.03));
+  border-radius: 12px;
+  border: 1px dashed rgba(6, 114, 115, 0.2);
+}
+
+/* Tag Filter Button */
+.tag-filter {
+  background: #067273;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(6, 114, 115, 0.2);
+}
+
+.tag-filter:hover {
+  background: #fac637;
+  color: #067273;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(6, 114, 115, 0.25);
+}
+
+.tag-filter.active {
+  background: #fac637;
+  color: #067273;
+  box-shadow: 0 3px 8px rgba(250, 198, 55, 0.3);
+}
+
+/* Filter Actions */
+.filter-actions {
+  text-align: center;
+  padding-top: 25px;
+  border-top: 2px solid rgba(6, 114, 115, 0.1);
+}
+
+.clear-filters-btn {
+  padding: 14px 32px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
+}
+
+.clear-filters-btn:hover {
+  background: #c82333;
+  transform: translateY(-3px);
+  box-shadow: 
+    0 6px 15px rgba(220, 53, 69, 0.3),
+    0 2px 5px rgba(220, 53, 69, 0.2);
+}
+
+/* Custom toggle styles for filters visibility */
+.search-filters-content {
+  transition: all 0.3s ease;
+}
+
+.search-filters-content.hidden {
+  display: none;
+}
+
+.search-filters-content.visible {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .filters-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .filters-section {
+    padding: 25px 20px;
+  }
+  
+  .filters-title {
+    font-size: 22px;
+  }
+  
+  .filter-group {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 576px) {
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filters-title {
+    font-size: 20px;
+  }
+  
+  .filter-group h4 {
+    font-size: 15px;
+  }
+  
+  .date-inputs {
+    grid-template-columns: 1fr;
+  }
+  
+  .clear-filters-btn {
+    width: 100%;
+  }
+}
