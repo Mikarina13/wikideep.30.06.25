@@ -525,14 +525,14 @@
         Show Filters
       </button>
       
-      <!-- Enhanced Filters Section -->
+      <!-- Enhanced Filters Section - Updated to match collab structure -->
       <div class="search-filters-content" id="search-filters-content" style="display: none;">
         <div class="filters-section">
           <h2 class="filters-title">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
             </svg>
-            Advanced Filters
+            Archive Filters
           </h2>
           
           <div class="filters-grid">
@@ -598,41 +598,6 @@
               <div class="date-inputs">
                 <input type="date" name="date-from" placeholder="From">
                 <input type="date" name="date-to" placeholder="To">
-              </div>
-            </div>
-            
-            <!-- Prompt Visibility Filter -->
-            <div class="filter-group">
-              <h4>Prompt Visibility</h4>
-              <div class="filter-options">
-                <div class="filter-option">
-                  <label>
-                    <input type="radio" name="prompt-visibility" value="all" checked>
-                    All Posts
-                  </label>
-                </div>
-                <div class="filter-option">
-                  <label>
-                    <input type="radio" name="prompt-visibility" value="public">
-                    Public Prompts
-                  </label>
-                </div>
-                <div class="filter-option">
-                  <label>
-                    <input type="radio" name="prompt-visibility" value="private">
-                    Private Prompts
-                  </label>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Views Range Filter -->
-            <div class="filter-group">
-              <h4>View Count</h4>
-              <div class="filter-range">
-                <input type="number" name="views-min" placeholder="Min views" min="0">
-                <span>to</span>
-                <input type="number" name="views-max" placeholder="Max views" min="0">
               </div>
             </div>
             
