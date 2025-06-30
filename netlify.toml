@@ -10,7 +10,7 @@
   for = "/*"
   [headers.values]
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' data: https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://brisxbmbsdomvfkxrwbf.supabase.co; frame-ancestors 'none'; object-src 'none';"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' data: https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://brisxbmbsdomvfkxrwbf.supabase.co https://*.webcontainer-api.io https://*.stackblitz.io; frame-ancestors 'none'; object-src 'none';"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "no-referrer"

@@ -23,7 +23,7 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
         imgSrc: ["'self'", "https:", "data:"],
         fontSrc: ["'self'", "https://cdnjs.cloudflare.com"],
-        connectSrc: ["'self'", "https://brisxbmbsdomvfkxrwbf.supabase.co"],
+        connectSrc: ["'self'", "https://brisxbmbsdomvfkxrwbf.supabase.co", "https://*.webcontainer-api.io", "https://*.stackblitz.io"],
         frameAncestors: ["'none'"],
         objectSrc: ["'none'"],
       },

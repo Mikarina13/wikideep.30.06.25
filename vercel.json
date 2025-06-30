@@ -9,7 +9,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' data: https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://brisxbmbsdomvfkxrwbf.supabase.co; frame-ancestors 'none'; object-src 'none';"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' data: https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self' https://cdnjs.cloudflare.com; connect-src 'self' https://brisxbmbsdomvfkxrwbf.supabase.co https://*.webcontainer-api.io https://*.stackblitz.io; frame-ancestors 'none'; object-src 'none';"
         },
         {
           "key": "X-Frame-Options",
