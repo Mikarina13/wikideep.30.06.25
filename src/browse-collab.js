@@ -1,7 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { initMenu } from './utils/menu.js';
 import { recordPageVisit, getPageTitle, getPageTypeFromUrl } from './utils/activityTracker.js';
-import SearchResultsView from './utils/searchResultsView.js';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -23,9 +22,6 @@ let currentFilters = {
   dateTo: '',
   tags: []
 };
-
-// View manager
-let searchResultsView = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize the menu
@@ -50,28 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Initialize filter toggle functionality
   initializeFilterToggle();
-  
-  // Initialize search results view manager
-  initializeSearchResultsView();
 });
-
-function initializeSearchResultsView() {
-  // Initialize the view manager after posts are loaded
-  searchResultsView = new SearchResultsView('#posts-container', {
-    nebulaContainerId: 'nebula-view-container',
-    listToggleSelector: '.view-toggle-btn[data-view="list"]',
-    nebulaToggleSelector: '.view-toggle-btn[data-view="nebula"]',
-    resultsData: filteredPosts,
-    onSwitchView: function(viewType) {
-      console.log('Switched to', viewType, 'view');
-      
-      // If switching to nebula view, make sure we have the latest data
-      if (viewType === 'nebula') {
-        searchResultsView.updateResults(filteredPosts);
-      }
-    }
-  });
-}
 
 function initializeFilterToggle() {
   const filtersToggle = document.getElementById('filters-toggle');
@@ -259,11 +234,6 @@ function applyFilters() {
   currentPage = 1;
   displayPosts();
   updateStats();
-  
-  // Update nebula view if it's active
-  if (searchResultsView) {
-    searchResultsView.updateResults(filteredPosts);
-  }
 }
 
 function displayPosts() {
@@ -520,50 +490,6 @@ function setupEventListeners() {
   const clearFiltersBtn = document.getElementById('clear-filters');
   if (clearFiltersBtn) {
     clearFiltersBtn.addEventListener('click', clearAllFilters);
-  }
-  
-  // View toggle
-  setupViewToggleListeners();
-}
-
-function setupViewToggleListeners() {
-  const listViewBtn = document.querySelector('.view-toggle-btn[data-view="list"]');
-  const nebulaViewBtn = document.querySelector('.view-toggle-btn[data-view="nebula"]');
-  
-  if (listViewBtn && nebulaViewBtn) {
-    // These should be handled by the SearchResultsView class now,
-    // but we'll keep the visual toggle in case the class isn't initialized
-    listViewBtn.addEventListener('click', () => {
-      listViewBtn.classList.add('active');
-      nebulaViewBtn.classList.remove('active');
-      
-      if (!searchResultsView) {
-        // Fallback behavior if the view manager isn't available
-        const postsContainer = document.getElementById('posts-container');
-        const nebulaContainer = document.getElementById('nebula-view-container');
-        
-        if (postsContainer) postsContainer.style.display = 'block';
-        if (nebulaContainer) nebulaContainer.style.display = 'none';
-      }
-    });
-    
-    nebulaViewBtn.addEventListener('click', () => {
-      nebulaViewBtn.classList.add('active');
-      listViewBtn.classList.remove('active');
-      
-      if (!searchResultsView) {
-        // Fallback behavior if the view manager isn't available
-        const postsContainer = document.getElementById('posts-container');
-        const nebulaContainer = document.getElementById('nebula-view-container');
-        
-        if (postsContainer) postsContainer.style.display = 'none';
-        if (nebulaContainer) {
-          nebulaContainer.style.display = 'block';
-          // Render nebula view
-          // This would normally be handled by the SearchResultsView class
-        }
-      }
-    });
   }
 }
 

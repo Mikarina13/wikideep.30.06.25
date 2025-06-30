@@ -3,7 +3,6 @@ import { initMenu } from './utils/menu.js';
 import { recordPageVisit, getPageTitle, getPageTypeFromUrl } from './utils/activityTracker.js';
 import { restrictAllDateInputs } from './utils/dateRestriction.js';
 import { debounce } from './utils/performance.js';
-import SearchResultsView from './utils/searchResultsView.js';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -28,9 +27,6 @@ let activeFilters = {
   viewsMax: '',
   tags: []
 };
-
-// View manager
-let searchResultsView = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize the menu
@@ -57,25 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Initialize filter toggle functionality
   initializeFilterToggle();
-
-  // Initialize search results view manager
-  initializeSearchResultsView();
 });
-
-function initializeSearchResultsView() {
-  // Initialize the view manager after posts are loaded
-  searchResultsView = new SearchResultsView('#posts-container', {
-    resultsData: filteredPosts,
-    onSwitchView: function(viewType) {
-      console.log('Switched to', viewType, 'view');
-      
-      // If switching to nebula view, make sure we have the latest data
-      if (viewType === 'nebula') {
-        searchResultsView.updateResults(filteredPosts);
-      }
-    }
-  });
-}
 
 function initializeFilterToggle() {
   const filtersToggle = document.getElementById('filters-toggle');
@@ -87,23 +65,43 @@ function initializeFilterToggle() {
       
       if (isVisible) {
         filtersContent.style.display = 'none';
-        filtersToggle.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
-          </svg>
-          Show Filters
-        `;
+        filtersToggle.textContent = 'Show Filters';
         filtersToggle.classList.remove('active');
+        
+        // Add the icon back after changing text
+        const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        iconSvg.setAttribute('width', '18');
+        iconSvg.setAttribute('height', '18');
+        iconSvg.setAttribute('viewBox', '0 0 24 24');
+        iconSvg.setAttribute('fill', 'none');
+        iconSvg.setAttribute('stroke', 'currentColor');
+        iconSvg.setAttribute('stroke-width', '2');
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z');
+        iconSvg.appendChild(path);
+        
+        filtersToggle.insertBefore(iconSvg, filtersToggle.firstChild);
       } else {
         filtersContent.style.display = 'block';
         filtersContent.classList.add('visible');
-        filtersToggle.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
-          </svg>
-          Hide Filters
-        `;
+        filtersToggle.textContent = 'Hide Filters';
         filtersToggle.classList.add('active');
+        
+        // Add the icon back after changing text
+        const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        iconSvg.setAttribute('width', '18');
+        iconSvg.setAttribute('height', '18');
+        iconSvg.setAttribute('viewBox', '0 0 24 24');
+        iconSvg.setAttribute('fill', 'none');
+        iconSvg.setAttribute('stroke', 'currentColor');
+        iconSvg.setAttribute('stroke-width', '2');
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z');
+        iconSvg.appendChild(path);
+        
+        filtersToggle.insertBefore(iconSvg, filtersToggle.firstChild);
       }
     });
   }
@@ -199,50 +197,6 @@ function setupEventListeners() {
   const applyFiltersBtn = document.getElementById('apply-filters');
   if (applyFiltersBtn) {
     applyFiltersBtn.addEventListener('click', applyFiltersAndSort);
-  }
-  
-  // View toggle
-  setupViewToggleListeners();
-}
-
-function setupViewToggleListeners() {
-  const listViewBtn = document.querySelector('.view-toggle-btn[data-view="list"]');
-  const nebulaViewBtn = document.querySelector('.view-toggle-btn[data-view="nebula"]');
-  
-  if (listViewBtn && nebulaViewBtn) {
-    // These should be handled by the SearchResultsView class now,
-    // but we'll keep the visual toggle in case the class isn't initialized
-    listViewBtn.addEventListener('click', () => {
-      listViewBtn.classList.add('active');
-      nebulaViewBtn.classList.remove('active');
-      
-      if (!searchResultsView) {
-        // Fallback behavior if the view manager isn't available
-        const postsContainer = document.getElementById('posts-container');
-        const nebulaContainer = document.getElementById('nebula-view-container');
-        
-        if (postsContainer) postsContainer.style.display = 'block';
-        if (nebulaContainer) nebulaContainer.style.display = 'none';
-      }
-    });
-    
-    nebulaViewBtn.addEventListener('click', () => {
-      nebulaViewBtn.classList.add('active');
-      listViewBtn.classList.remove('active');
-      
-      if (!searchResultsView) {
-        // Fallback behavior if the view manager isn't available
-        const postsContainer = document.getElementById('posts-container');
-        const nebulaContainer = document.getElementById('nebula-view-container');
-        
-        if (postsContainer) postsContainer.style.display = 'none';
-        if (nebulaContainer) {
-          nebulaContainer.style.display = 'block';
-          // Render nebula view
-          // This would normally be handled by the SearchResultsView class
-        }
-      }
-    });
   }
 }
 
@@ -434,11 +388,6 @@ function applyFiltersAndSort() {
   currentPage = 1;
   displayPosts();
   updateStats();
-  
-  // Update nebula view if it's active
-  if (searchResultsView) {
-    searchResultsView.updateResults(filteredPosts);
-  }
 }
 
 function sortPosts(posts, sortType) {
