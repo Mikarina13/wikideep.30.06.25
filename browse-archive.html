@@ -286,15 +286,15 @@
       }
       
       .favorite-btn {
-        display: inline-flex;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
         align-items: center;
         justify-content: center;
-        width: 32px;
-        height: 32px;
-        background: white;
-        color: #666;
+        background: transparent;
         border: 1px solid rgba(6, 114, 115, 0.2);
-        border-radius: 6px;
+        color: #666;
         cursor: pointer;
         transition: all 0.2s ease;
       }
@@ -682,60 +682,5 @@
         <a href="/our-vision.html">Our Vision</a>
       </div>
     </div>
-
-    <script>
-      // Client-side JavaScript to toggle filters visibility
-      document.addEventListener('DOMContentLoaded', function() {
-        const filtersToggle = document.getElementById('filters-toggle');
-        const filtersContent = document.getElementById('search-filters-content');
-        
-        if (filtersToggle && filtersContent) {
-          filtersToggle.addEventListener('click', function() {
-            const isVisible = filtersContent.style.display !== 'none';
-            
-            if (isVisible) {
-              filtersContent.style.display = 'none';
-              filtersToggle.textContent = 'Show Filters';
-              filtersToggle.classList.remove('active');
-              
-              // Add the icon back after changing text
-              const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              iconSvg.setAttribute('width', '18');
-              iconSvg.setAttribute('height', '18');
-              iconSvg.setAttribute('viewBox', '0 0 24 24');
-              iconSvg.setAttribute('fill', 'none');
-              iconSvg.setAttribute('stroke', 'currentColor');
-              iconSvg.setAttribute('stroke-width', '2');
-              
-              const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-              path.setAttribute('d', 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z');
-              iconSvg.appendChild(path);
-              
-              filtersToggle.insertBefore(iconSvg, filtersToggle.firstChild);
-            } else {
-              filtersContent.style.display = 'block';
-              filtersContent.classList.add('visible');
-              filtersToggle.textContent = 'Hide Filters';
-              filtersToggle.classList.add('active');
-              
-              // Add the icon back after changing text
-              const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              iconSvg.setAttribute('width', '18');
-              iconSvg.setAttribute('height', '18');
-              iconSvg.setAttribute('viewBox', '0 0 24 24');
-              iconSvg.setAttribute('fill', 'none');
-              iconSvg.setAttribute('stroke', 'currentColor');
-              iconSvg.setAttribute('stroke-width', '2');
-              
-              const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-              path.setAttribute('d', 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z');
-              iconSvg.appendChild(path);
-              
-              filtersToggle.insertBefore(iconSvg, filtersToggle.firstChild);
-            }
-          });
-        }
-      });
-    </script>
   </body>
 </html>
