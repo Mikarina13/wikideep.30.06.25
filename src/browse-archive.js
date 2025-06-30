@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { initMenu } from './utils/menu.js';
 import { recordPageVisit, getPageTitle, getPageTypeFromUrl } from './utils/activityTracker.js';
 import { restrictAllDateInputs } from './utils/dateRestriction.js';
+import { debounce } from './utils/performance.js';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -64,23 +65,43 @@ function initializeFilterToggle() {
       
       if (isVisible) {
         filtersContent.style.display = 'none';
-        filtersToggle.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
-          </svg>
-          Show Filters
-        `;
+        filtersToggle.textContent = 'Show Filters';
         filtersToggle.classList.remove('active');
+        
+        // Add the icon back after changing text
+        const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        iconSvg.setAttribute('width', '18');
+        iconSvg.setAttribute('height', '18');
+        iconSvg.setAttribute('viewBox', '0 0 24 24');
+        iconSvg.setAttribute('fill', 'none');
+        iconSvg.setAttribute('stroke', 'currentColor');
+        iconSvg.setAttribute('stroke-width', '2');
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z');
+        iconSvg.appendChild(path);
+        
+        filtersToggle.insertBefore(iconSvg, filtersToggle.firstChild);
       } else {
         filtersContent.style.display = 'block';
         filtersContent.classList.add('visible');
-        filtersToggle.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
-          </svg>
-          Hide Filters
-        `;
+        filtersToggle.textContent = 'Hide Filters';
         filtersToggle.classList.add('active');
+        
+        // Add the icon back after changing text
+        const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        iconSvg.setAttribute('width', '18');
+        iconSvg.setAttribute('height', '18');
+        iconSvg.setAttribute('viewBox', '0 0 24 24');
+        iconSvg.setAttribute('fill', 'none');
+        iconSvg.setAttribute('stroke', 'currentColor');
+        iconSvg.setAttribute('stroke-width', '2');
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z');
+        iconSvg.appendChild(path);
+        
+        filtersToggle.insertBefore(iconSvg, filtersToggle.firstChild);
       }
     });
   }
@@ -171,6 +192,12 @@ function setupEventListeners() {
   if (clearFiltersBtn) {
     clearFiltersBtn.addEventListener('click', clearAllFilters);
   }
+
+  // Apply filters button
+  const applyFiltersBtn = document.getElementById('apply-filters');
+  if (applyFiltersBtn) {
+    applyFiltersBtn.addEventListener('click', applyFiltersAndSort);
+  }
 }
 
 function setupFilters() {
@@ -179,7 +206,6 @@ function setupFilters() {
   aiModelFilters.forEach(filter => {
     filter.addEventListener('change', () => {
       updateArrayFilter('aiModel', filter.value, filter.checked);
-      applyFiltersAndSort();
     });
   });
   
@@ -188,7 +214,6 @@ function setupFilters() {
   contentTypeFilters.forEach(filter => {
     filter.addEventListener('change', () => {
       activeFilters.contentType = filter.value;
-      applyFiltersAndSort();
     });
   });
   
@@ -197,7 +222,6 @@ function setupFilters() {
   promptVisibilityFilters.forEach(filter => {
     filter.addEventListener('change', () => {
       activeFilters.promptVisibility = filter.value;
-      applyFiltersAndSort();
     });
   });
   
@@ -208,14 +232,12 @@ function setupFilters() {
   if (dateFromInput) {
     dateFromInput.addEventListener('change', () => {
       activeFilters.dateFrom = dateFromInput.value;
-      applyFiltersAndSort();
     });
   }
   
   if (dateToInput) {
     dateToInput.addEventListener('change', () => {
       activeFilters.dateTo = dateToInput.value;
-      applyFiltersAndSort();
     });
   }
   
@@ -226,14 +248,12 @@ function setupFilters() {
   if (viewsMinInput) {
     viewsMinInput.addEventListener('input', debounce(() => {
       activeFilters.viewsMin = viewsMinInput.value;
-      applyFiltersAndSort();
     }, 500));
   }
   
   if (viewsMaxInput) {
     viewsMaxInput.addEventListener('input', debounce(() => {
       activeFilters.viewsMax = viewsMaxInput.value;
-      applyFiltersAndSort();
     }, 500));
   }
   
@@ -266,8 +286,6 @@ function toggleTagFilter(tag, buttonElement) {
       activeFilters.tags.push(tag);
     }
   }
-  
-  applyFiltersAndSort();
 }
 
 function handleSearch(e) {
@@ -849,16 +867,4 @@ function showError(message) {
       </div>
     `;
   }
-}
-
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
 }

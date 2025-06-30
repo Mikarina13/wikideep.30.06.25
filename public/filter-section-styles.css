@@ -203,7 +203,7 @@
   margin-bottom: 20px;
 }
 
-.tag-search input {
+.tag-search {
   width: 100%;
   max-width: 450px;
   padding: 14px 20px;
@@ -216,7 +216,7 @@
   background: #ffffff;
 }
 
-.tag-search input:focus {
+.tag-search:focus {
   outline: none;
   border-color: #067273;
   box-shadow: 0 0 0 3px rgba(6, 114, 115, 0.1);
@@ -265,22 +265,27 @@
 
 /* Filter Actions */
 .filter-actions {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding-top: 25px;
   border-top: 2px solid rgba(6, 114, 115, 0.1);
 }
 
 .clear-filters-btn {
-  padding: 14px 32px;
+  padding: 14px 24px;
   background: #dc3545;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .clear-filters-btn:hover {
@@ -289,6 +294,30 @@
   box-shadow: 
     0 6px 15px rgba(220, 53, 69, 0.3),
     0 2px 5px rgba(220, 53, 69, 0.2);
+}
+
+.apply-filters-btn {
+  padding: 14px 24px;
+  background: #067273;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 10px rgba(6, 114, 115, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.apply-filters-btn:hover {
+  background: #045c66;
+  transform: translateY(-3px);
+  box-shadow: 
+    0 6px 15px rgba(6, 114, 115, 0.3),
+    0 2px 5px rgba(6, 114, 115, 0.2);
 }
 
 /* Custom toggle styles for filters visibility */
@@ -328,6 +357,16 @@
   .filter-group {
     padding: 18px;
   }
+  
+  .filter-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .clear-filters-btn,
+  .apply-filters-btn {
+    width: 100%;
+  }
 }
 
 @media (max-width: 576px) {
@@ -345,9 +384,5 @@
   
   .date-inputs {
     grid-template-columns: 1fr;
-  }
-  
-  .clear-filters-btn {
-    width: 100%;
   }
 }
