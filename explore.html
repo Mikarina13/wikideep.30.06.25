@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explore - WikiDeep.io</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style-responsive.css">
+    <link rel="stylesheet" href="/public/hide-forum-nav.css">
+    <script type="module" src="/src/footer-menu.js"></script>
+    <style>
+      .explore-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 40px 40px;
+        min-height: 100vh;
+        background: white;
+      }
+      
+      .explore-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid rgba(6, 114, 115, 0.1);
+      }
+      
+      .explore-title {
+        color: #067273;
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      
+      .explore-subtitle {
+        color: rgba(6, 114, 115, 0.7);
+        font-size: 18px;
+        margin: 0;
+      }
+      
+      .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+      }
+      
+      .category-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid rgba(6, 114, 115, 0.1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      
+      .category-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(6, 114, 115, 0.15);
+        border-color: #fac637;
+      }
+      
+      .category-image {
+        height: 160px;
+        overflow: hidden;
+        position: relative;
+      }
+      
+      .category-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+      
+      .category-card:hover .category-image img {
+        transform: scale(1.05);
+      }
+      
+      .category-content {
+        padding: 20px;
+      }
+      
+      .category-title {
+        color: #067273;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        position: relative;
+        padding-left: 28px;
+      }
+      
+      .category-title svg {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #fac637;
+      }
+      
+      .category-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 16px;
+        min-height: 65px;
+      }
+      
+      .explore-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 16px;
+        background: #067273;
+        color: white;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+      
+      .explore-btn:hover {
+        background: #045c66;
+        transform: translateY(-2px);
+      }
+      
+      .trending-section {
+        margin-bottom: 60px;
+      }
+      
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+        border-bottom: 2px solid rgba(6, 114, 115, 0.1);
+        padding-bottom: 15px;
+      }
+      
+      .section-title {
+        color: #067273;
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .view-all {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #067273;
+        font-size: 15px;
+        font-weight: 500;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+      
+      .view-all:hover {
+        background: rgba(6, 114, 115, 0.05);
+      }
+      
+      .trending-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+      }
+      
+      .trending-card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid rgba(6, 114, 115, 0.1);
+        padding: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      
+      .trending-card:hover {
+        border-color: #fac637;
+        box-shadow: 0 8px 16px rgba(6, 114, 115, 0.1);
+        transform: translateY(-4px);
+      }
+      
+      .trending-model {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        background: rgba(6, 114, 115, 0.1);
+        border-radius: 20px;
+        color: #067273;
+        font-size: 11px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      
+      .trending-title {
+        color: #067273;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      
+      .trending-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(6, 114, 115, 0.1);
+        color: rgba(6, 114, 115, 0.7);
+        font-size: 12px;
+      }
+      
+      @media (max-width: 768px) {
+        .explore-container {
+          padding: 80px 20px 20px;
+        }
+        
+        .category-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .trending-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .explore-title {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="menu-header">
+      <img src="https://i.imgur.com/zcLQ3gB.png" alt="Menu Logo" class="menu-logo">
+      <div class="nav-links">
+        <div class="nav-container">
+          <a href="/publish.html" class="nav-item publish-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14"/>
+              <path d="M5 12h14"/>
+            </svg>
+            Publish
+          </a>
+          <a href="/index.html" class="nav-item archives-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4v16a2 2 0 002 2h12a2 2 0 002-2V8.342a2 2 0 00-.602-1.43l-4.44-4.342A2 2 0 0013.56 2H6a2 2 0 00-2 2z"/>
+              <path d="M14 2v4a2 2 0 002 2h4"/>
+            </svg>
+            BROWSE
+          </a>
+          <a href="/explore.html" class="nav-item explore-nav active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+            EXPLORE
+          </a>
+          <a href="/search.html" class="nav-item search-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            SEARCH
+          </a>
+          <a href="/collab.html" class="nav-item collab-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+              <path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            COLLAB
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="menu-overlay"></div>
+    <div class="menu-options info-menu"></div>
+    <div class="left-edge-trigger"></div>
+    <div class="menu-hamburger-indicator">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </div>
+
+    <div class="explore-container">
+      <div class="explore-header">
+        <h1 class="explore-title">Explore AI Knowledge</h1>
+        <p class="explore-subtitle">Discover curated AI insights by topics, models, and trending content</p>
+      </div>
+      
+      <!-- Categories Section -->
+      <div class="category-grid">
+        <div class="category-card">
+          <div class="category-image">
+            <img src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="AI Technology">
+          </div>
+          <div class="category-content">
+            <h3 class="category-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v8m0 8v4M4.93 10H2v4h2.93m4.14-4H9v4h2.07m4.13-4h-2.07v4h2.07m4.13-4h-2.93v4h2.93M22 18H2M22 6H2"/>
+              </svg>
+              AI Technology
+            </h3>
+            <p class="category-description">Explore the latest advancements in artificial intelligence, machine learning, and neural networks.</p>
+            <a href="/browse-archive.html" class="explore-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M15 3h6v6"/>
+                <path d="M10 14L21 3"/>
+                <path d="M21 9v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11"/>
+              </svg>
+              Explore
+            </a>
+          </div>
+        </div>
+        
+        <div class="category-card">
+          <div class="category-image">
+            <img src="https://images.pexels.com/photos/5380642/pexels-photo-5380642.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="AI Ethics">
+          </div>
+          <div class="category-content">
+            <h3 class="category-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              AI Ethics
+            </h3>
+            <p class="category-description">Dive into discussions on responsible AI, ethical guidelines, and the societal impact of artificial intelligence.</p>
+            <a href="/browse-archive.html" class="explore-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M15 3h6v6"/>
+                <path d="M10 14L21 3"/>
+                <path d="M21 9v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11"/>
+              </svg>
+              Explore
+            </a>
+          </div>
+        </div>
+        
+        <div class="category-card">
+          <div class="category-image">
+            <img src="https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="AI Applications">
+          </div>
+          <div class="category-content">
+            <h3 class="category-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2.28A2 2 0 0 0 21 14h0a2 2 0 0 0 0-4h0a2 2 0 0 0 0-4h0a2 2 0 0 0 0-4h0a2 2 0 0 0-2-2H5z"/>
+                <path d="M6 8h.01"/>
+                <path d="M6 16h.01"/>
+                <path d="M10 8h8"/>
+                <path d="M10 16h8"/>
+              </svg>
+              AI Applications
+            </h3>
+            <p class="category-description">Discover practical applications of AI in healthcare, finance, education, and other industries.</p>
+            <a href="/browse-archive.html" class="explore-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <path d="M15 3h6v6"/>
+                <path d="M10 14L21 3"/>
+                <path d="M21 9v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h11"/>
+              </svg>
+              Explore
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Trending Section -->
+      <div class="trending-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+            Trending Posts
+          </h2>
+          <a href="/browse-archive.html" class="view-all">
+            View All
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14"/>
+              <path d="M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="trending-grid">
+          <div class="trending-card" onclick="window.location.href='/browse-archive.html'">
+            <div class="trending-model">GPT-4</div>
+            <h3 class="trending-title">Advanced Machine Learning Techniques for Natural Language Processing</h3>
+            <div class="trending-meta">
+              <span>5 days ago</span>
+              <span>1.2k views</span>
+            </div>
+          </div>
+          
+          <div class="trending-card" onclick="window.location.href='/browse-archive.html'">
+            <div class="trending-model">Claude 3</div>
+            <h3 class="trending-title">Practical Applications of Reinforcement Learning in Robotics</h3>
+            <div class="trending-meta">
+              <span>3 days ago</span>
+              <span>875 views</span>
+            </div>
+          </div>
+          
+          <div class="trending-card" onclick="window.location.href='/browse-archive.html'">
+            <div class="trending-model">Gemini Pro</div>
+            <h3 class="trending-title">The Future of AI in Healthcare: Opportunities and Challenges</h3>
+            <div class="trending-meta">
+              <span>1 week ago</span>
+              <span>2.3k views</span>
+            </div>
+          </div>
+          
+          <div class="trending-card" onclick="window.location.href='/browse-archive.html'">
+            <div class="trending-model">GPT-4</div>
+            <h3 class="trending-title">Understanding Transformer Architecture: A Deep Dive</h3>
+            <div class="trending-meta">
+              <span>2 days ago</span>
+              <span>950 views</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer visible">
+      <div class="footer-links">
+        <a href="/forum.html">Forum</a>
+        <a href="/info-hub.html">Contributor Guidelines</a>
+        <a href="/info-hub.html#terms">Terms</a>
+        <a href="/info-hub.html#privacy-policy">Privacy Policy</a>
+        <a href="/info-hub.html#copyright-notice">Copyright Notice</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/support.html">Support WikiDeep.io</a>
+        <a href="/our-vision.html">Our Vision</a>
+      </div>
+    </div>
+  </body>
+</html>
