@@ -375,6 +375,13 @@ function createPostHTML(post, type) {
             </svg>
             Edit
           </button>
+          <button class="delete-post-btn" onclick="deletePost('${post.id}', '${type}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3,6 5,6 21,6"/>
+              <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2v2"/>
+            </svg>
+            Delete
+          </button>
         </div>
       </div>
       
@@ -573,6 +580,54 @@ async function handleAvatarUpload(event) {
 window.editPost = function(postId, postType) {
   // Redirect to edit page (could be implemented later)
   window.location.href = `/publish.html?tab=${postType}&edit=${postId}`;
+};
+
+// Add deletePost function and make it globally available
+window.deletePost = async function(postId, postType) {
+  if (!confirm(`Are you sure you want to delete this ${postType} post? This action cannot be undone.`)) {
+    return;
+  }
+  
+  try {
+    // Delete the post from the appropriate table
+    const tableName = postType === 'archive' ? 'archive_posts' : 'collab_posts';
+    
+    const { error } = await supabase
+      .from(tableName)
+      .delete()
+      .eq('id', postId)
+      .eq('user_id', currentUser.id); // Ensure user can only delete their own posts
+    
+    if (error) throw error;
+    
+    // Remove the post from the DOM
+    const postItems = document.querySelectorAll('.post-item');
+    postItems.forEach(item => {
+      if (item.querySelector(`.post-actions button[onclick*="${postId}"]`)) {
+        // Add fade-out animation
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(-10px)';
+        item.style.transition = 'all 0.3s ease';
+        
+        // Remove after animation completes
+        setTimeout(() => {
+          item.remove();
+          
+          // Check if there are no more posts
+          const container = document.getElementById(postType === 'archive' ? 'archive-posts' : 'collab-posts');
+          if (container && container.querySelectorAll('.post-item').length === 0) {
+            displayUserPosts([], postType === 'archive' ? 'archive-posts' : 'collab-posts');
+          }
+        }, 300);
+      }
+    });
+    
+    showNotification(`${postType.charAt(0).toUpperCase() + postType.slice(1)} post deleted successfully!`, 'success');
+    
+  } catch (error) {
+    console.error(`Error deleting ${postType} post:`, error);
+    showNotification(`Failed to delete ${postType} post: ${error.message}`, 'error');
+  }
 };
 
 function showNotification(message, type = 'info') {

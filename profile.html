@@ -373,7 +373,7 @@
         flex-shrink: 0;
       }
 
-      .edit-post-btn, .view-post-btn {
+      .edit-post-btn, .view-post-btn, .delete-post-btn {
         display: inline-flex;
         align-items: center;
         gap: 6px;
@@ -406,6 +406,18 @@
 
       .view-post-btn:hover {
         background: #045c66;
+        transform: translateY(-1px);
+      }
+      
+      .delete-post-btn {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+        border: 1px solid rgba(220, 53, 69, 0.3);
+      }
+      
+      .delete-post-btn:hover {
+        background: rgba(220, 53, 69, 0.2);
+        border-color: rgba(220, 53, 69, 0.4);
         transform: translateY(-1px);
       }
 
@@ -649,7 +661,7 @@
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
     </div>
-    
+
     <div class="profile-container">
       <div class="profile-header-title">
         <h1>My Profile</h1>
@@ -744,8 +756,8 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                 <circle cx="8.5" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-                <path d="M16 3.13a4 4 0 010 7.75"/>
+                <path d="M20 8v6"/>
+                <path d="M23 11h-6"/>
               </svg>
               Following
             </button>
