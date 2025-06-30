@@ -23,21 +23,28 @@ try {
   throw new Error(`Supabase configuration error: Invalid URL format for VITE_SUPABASE_URL: ${supabaseUrl}`);
 }
 
-// Log configuration for debugging (without exposing sensitive data)
-console.log('Supabase client configuration:', {
-  url: supabaseUrl,
-  keyPresent: !!supabaseAnonKey,
-  keyLength: supabaseAnonKey.length
-});
-
+// Create Supabase client with improved options for reliability
 let supabase;
 
 try {
-  supabase = createClient(supabaseUrl, supabaseAnonKey);
+  supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    },
+    global: {
+      headers: { 'x-application-name': 'wikideep' },
+    },
+    realtime: {
+      timeout: 30000
+    }
+  });
   console.log('Supabase client created successfully');
 } catch (error) {
   console.error('Failed to create Supabase client:', error);
   throw new Error(`Failed to initialize Supabase client: ${error.message}`);
 }
 
+// Export the client instance
 export default supabase;

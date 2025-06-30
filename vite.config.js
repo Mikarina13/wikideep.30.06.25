@@ -50,9 +50,38 @@ export default defineConfig({
         ourVision: resolve(__dirname, 'our-vision.html'),
         viewPost: resolve(__dirname, 'view-post.html'),
         publicProfile: resolve(__dirname, 'public-profile.html'),
-        notifications: resolve(__dirname, 'notifications.html')
+        notifications: resolve(__dirname, 'notifications.html'),
+        adminPanel: resolve(__dirname, 'admin-panel.html')
       },
     },
-    outDir: 'dist'
+    outDir: 'dist',
+    // Optimize output for production
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    // Enable chunk splitting for better caching
+    chunkSizeWarningLimit: 1000,
+    cssCodeSplit: true,
+    sourcemap: false,
+    // Improve asset optimization
+    assetsInlineLimit: 4096
+  },
+  // Optimize CSS output
+  css: {
+    devSourcemap: true,
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true
+      }
+    }
+  },
+  // Improve caching and pre-loading
+  optimizeDeps: {
+    include: ['@supabase/supabase-js'],
+    exclude: []
   }
 })

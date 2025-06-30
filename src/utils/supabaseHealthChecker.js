@@ -58,15 +58,21 @@ export async function checkSupabaseHealth() {
       let allTablesAccessible = true;
       
       for (const table of tables) {
-        const { count, error } = await supabase
-          .from(table)
-          .select('*', { count: 'exact', head: true });
-          
-        if (error) {
-          results.details.tables[table] = { accessible: false, error: error.message };
+        try {
+          const { count, error } = await supabase
+            .from(table)
+            .select('*', { count: 'exact', head: true });
+            
+          if (error) {
+            results.details.tables[table] = { accessible: false, error: error.message };
+            allTablesAccessible = false;
+          } else {
+            results.details.tables[table] = { accessible: true, count };
+          }
+        } catch (tableError) {
+          // Handle individual table errors without failing the whole test
+          results.details.tables[table] = { accessible: false, error: tableError.message };
           allTablesAccessible = false;
-        } else {
-          results.details.tables[table] = { accessible: true, count };
         }
       }
       
@@ -190,4 +196,43 @@ export async function quickConnectionTest() {
     console.error("Supabase connection failed:", error);
     return false;
   }
+}
+
+/**
+ * Tests the WebSocket connection to Supabase Realtime
+ */
+export async function testRealtimeConnection() {
+  return new Promise((resolve) => {
+    try {
+      // Set up a timeout to consider the test failed after 5 seconds
+      const timeout = setTimeout(() => {
+        resolve({ success: false, error: 'Connection timeout' });
+      }, 5000);
+      
+      const channel = supabase.channel('realtime-test', {
+        config: {
+          broadcast: { self: true }
+        }
+      });
+      
+      // Listen for connection status
+      channel
+        .on('system', { event: 'presence_state' }, () => {
+          clearTimeout(timeout);
+          channel.unsubscribe();
+          resolve({ success: true, latency: null });
+        })
+        .subscribe((status) => {
+          if (status !== 'SUBSCRIBED') {
+            // If we get an error status
+            if (status === 'CHANNEL_ERROR' || status === 'CLOSED' || status === 'TIMED_OUT') {
+              clearTimeout(timeout);
+              resolve({ success: false, error: `Connection status: ${status}` });
+            }
+          }
+        });
+    } catch (error) {
+      resolve({ success: false, error: error.message });
+    }
+  });
 }

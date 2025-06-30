@@ -129,6 +129,14 @@ export async function initMenu() {
     if (!session) return;
     
     try {
+      // Use a cached approach with error handling
+      const cachedCount = sessionStorage.getItem('unreadNotifications');
+      
+      // Display cached count immediately while we fetch the updated count
+      if (cachedCount) {
+        updateNotificationBadge(parseInt(cachedCount, 10));
+      }
+      
       // Get count of unread notifications
       const { count, error } = await supabase
         .from('user_notifications')
@@ -138,11 +146,18 @@ export async function initMenu() {
       
       if (error) throw error;
       
-      // Update notification badge
-      updateNotificationBadge(count || 0);
+      // Update notification badge and cache the result
+      const unreadCount = count || 0;
+      updateNotificationBadge(unreadCount);
+      sessionStorage.setItem('unreadNotifications', unreadCount.toString());
       
     } catch (error) {
       console.error('Error loading unread notifications count:', error);
+      // If we have a cached count, keep displaying it despite the error
+      // If no cached count, show a default indicator (like "!")
+      if (!sessionStorage.getItem('unreadNotifications')) {
+        updateNotificationBadge('!');
+      }
     }
   }
 
@@ -180,7 +195,7 @@ export async function initMenu() {
     // Update badge
     const badge = notificationLink.querySelector('.notification-badge');
     if (badge) {
-      if (count > 0) {
+      if (count && count !== 0) {
         badge.textContent = count > 99 ? '99+' : count;
         badge.style.display = 'inline-flex';
         // Add pulsing animation
@@ -443,23 +458,27 @@ export async function initMenu() {
     }
   }
 
-  // Load notification count for badge
+  // Load notification count for badge using error handling
   if (session) {
     loadUnreadNotificationsCount();
     
     // Set up real-time subscription to notifications
-    const notificationSubscription = supabase
-      .channel('public:user_notifications')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'user_notifications',
-        filter: `user_id=eq.${session.user.id}`
-      }, () => {
-        // When notifications change, refresh the count
-        loadUnreadNotificationsCount();
-      })
-      .subscribe();
+    try {
+      const notificationSubscription = supabase
+        .channel('public:user_notifications')
+        .on('postgres_changes', {
+          event: '*',
+          schema: 'public',
+          table: 'user_notifications',
+          filter: `user_id=eq.${session.user.id}`
+        }, () => {
+          // When notifications change, refresh the count
+          loadUnreadNotificationsCount();
+        })
+        .subscribe();
+    } catch (error) {
+      console.error('Error setting up notification subscription:', error);
+    }
   }
 
   // Menu toggle functionality - now with locking
@@ -503,7 +522,8 @@ export async function initMenu() {
         if (error) throw error;
         window.location.reload();
       } catch (error) {
-        alert(error.message);
+        console.error('Logout error:', error);
+        alert('Failed to sign out: ' + error.message);
       }
     });
   }

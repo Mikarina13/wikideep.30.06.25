@@ -29,7 +29,8 @@ export function recordPageVisit({ type, title, url, postId = null, metadata = {}
       metadata,
       timestamp: new Date().toISOString(),
       date: new Date().toLocaleDateString(),
-      time: new Date().toLocaleTimeString()
+      time: new Date().toLocaleTimeString(),
+      viewed: false // Mark as unread by default
     };
     
     // Remove duplicate entries (same URL within last 5 minutes)
@@ -51,7 +52,6 @@ export function recordPageVisit({ type, title, url, postId = null, metadata = {}
     // Save to localStorage
     localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(limitedActivity));
     
-    console.log('Activity recorded:', entry);
   } catch (error) {
     console.error('Error recording activity:', error);
   }
@@ -67,6 +67,8 @@ export function getActivityLog() {
     return stored ? JSON.parse(stored) : [];
   } catch (error) {
     console.error('Error reading activity log:', error);
+    // If there's a parse error, clear the corrupted data
+    localStorage.removeItem(ACTIVITY_STORAGE_KEY);
     return [];
   }
 }
@@ -92,7 +94,6 @@ export function getFilteredActivity(filter = 'all') {
 export function clearActivityLog() {
   try {
     localStorage.removeItem(ACTIVITY_STORAGE_KEY);
-    console.log('Activity log cleared');
   } catch (error) {
     console.error('Error clearing activity log:', error);
   }
@@ -109,9 +110,11 @@ export function getActivityStats() {
     total: activity.length,
     today: 0,
     thisWeek: 0,
+    unread: 0,
     byType: {
       archive: 0,
-      collab: 0
+      collab: 0,
+      page: 0
     }
   };
   
@@ -121,10 +124,9 @@ export function getActivityStats() {
   activity.forEach(entry => {
     const entryDate = new Date(entry.timestamp);
     
-    // Count by type (only counting archive and collab)
-    if (entry.type === 'archive' || entry.type === 'collab') {
-      stats.byType[entry.type]++;
-    }
+    // Count by type
+    const type = entry.type || 'page';
+    stats.byType[type] = (stats.byType[type] || 0) + 1;
     
     // Count today's activities
     if (entryDate.toDateString() === today) {
@@ -135,9 +137,53 @@ export function getActivityStats() {
     if (entryDate >= weekAgo) {
       stats.thisWeek++;
     }
+    
+    // Count unread activities
+    if (entry.viewed === false) {
+      stats.unread++;
+    }
   });
   
   return stats;
+}
+
+/**
+ * Mark activity as viewed/read
+ * @param {string} activityId - ID of the activity to mark
+ * @returns {boolean} Success status
+ */
+export function markActivityAsViewed(activityId) {
+  try {
+    const activity = getActivityLog();
+    const index = activity.findIndex(item => item.id === activityId);
+    
+    if (index !== -1) {
+      activity[index].viewed = true;
+      localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(activity));
+      return true;
+    }
+    
+    return false;
+  } catch (error) {
+    console.error('Error marking activity as viewed:', error);
+    return false;
+  }
+}
+
+/**
+ * Mark all activities as viewed/read
+ * @returns {boolean} Success status
+ */
+export function markAllActivitiesAsViewed() {
+  try {
+    const activity = getActivityLog();
+    const updatedActivity = activity.map(item => ({ ...item, viewed: true }));
+    localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(updatedActivity));
+    return true;
+  } catch (error) {
+    console.error('Error marking all activities as viewed:', error);
+    return false;
+  }
 }
 
 /**
@@ -169,7 +215,11 @@ export function getPageTypeFromUrl(url) {
     return 'collab';
   }
   
-  return 'archive';
+  if (path.includes('forum.html')) {
+    return 'forum';
+  }
+  
+  return 'page';
 }
 
 /**
@@ -200,8 +250,32 @@ export function getPageTitle() {
     '/support.html': 'Support WikiDeep.io',
     '/info-hub.html': 'Info Hub',
     '/login.html': 'Login',
-    '/reset-password.html': 'Reset Password'
+    '/reset-password.html': 'Reset Password',
+    '/forum.html': 'Forum',
+    '/admin-panel.html': 'Admin Panel',
+    '/notifications.html': 'Notifications',
+    '/accept-terms.html': 'Accept Terms'
   };
   
   return pathMap[path] || 'WikiDeep.io';
+}
+
+/**
+ * Search activity log by keyword
+ * @param {string} query - Search query
+ * @returns {Array} Matching activity entries
+ */
+export function searchActivity(query) {
+  if (!query || query.trim() === '') {
+    return getActivityLog();
+  }
+  
+  const queryLower = query.toLowerCase().trim();
+  const activity = getActivityLog();
+  
+  return activity.filter(entry => {
+    return (entry.title && entry.title.toLowerCase().includes(queryLower)) || 
+           (entry.url && entry.url.toLowerCase().includes(queryLower)) || 
+           (entry.type && entry.type.toLowerCase().includes(queryLower));
+  });
 }

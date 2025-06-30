@@ -47,7 +47,7 @@ export function handleSupabaseError(error, context = '') {
 
   console.error(`Supabase error in ${context}:`, error);
   
-  const errorCode = error.code || error.status || error.message || 'unknown';
+  const errorCode = error.code || error.status || (error.message ? error.message.split(':')[0] : 'unknown');
   
   // Find a matching error message or use the original message
   let message = errorMessages[errorCode] || error.message || 'An unexpected error occurred';
@@ -65,7 +65,7 @@ export function handleSupabaseError(error, context = '') {
     suggestion = 'You may not have permission to perform this action. Please contact support if you believe this is a mistake.';
   } else if (errorCode.includes('storage')) {
     suggestion = 'There was a problem accessing files. Try refreshing the page.';
-  } else if (errorCode.includes('NetworkError') || errorCode === 'Failed to fetch' || errorCode === '503') {
+  } else if (errorCode.includes('NetworkError') || errorCode === 'Failed to fetch' || errorCode === '503' || error.message?.includes('fetch')) {
     suggestion = 'Please check your internet connection and try again. If the problem persists, the service might be temporarily unavailable.';
   } else if (errorCode === '500') {
     suggestion = 'This appears to be a server issue. Please try again later or contact support if the problem persists.';
@@ -88,7 +88,7 @@ export function handleSupabaseError(error, context = '') {
 export function showErrorNotification(error, context = '') {
   const errorInfo = typeof error === 'object' && error.message 
     ? handleSupabaseError(error, context)
-    : { message: error, suggestion: '' };
+    : { message: error.message || error, suggestion: error.suggestion || '' };
   
   // Create a notification element
   const notification = document.createElement('div');
@@ -215,4 +215,47 @@ export async function safeSupabaseOperation(operation, context = '', showNotific
     
     return { error: errorInfo };
   }
+}
+
+/**
+ * Retry a Supabase operation with exponential backoff
+ * @param {Function} operation - Async function to retry
+ * @param {Object} options - Configuration options
+ * @returns {Promise<any>} - Result of the operation or throws after all retries
+ */
+export async function retryOperation(operation, options = {}) {
+  const {
+    maxRetries = 3,
+    initialDelay = 300,
+    maxDelay = 3000,
+    factor = 2,
+    shouldRetry = (error) => {
+      // By default, retry on network errors and server errors (5xx)
+      return error.message?.includes('fetch') || 
+             error.message?.includes('network') || 
+             error.status >= 500;
+    }
+  } = options;
+  
+  let lastError;
+  let delay = initialDelay;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      
+      // Check if we should retry based on the error
+      if (attempt >= maxRetries || !shouldRetry(error)) {
+        break;
+      }
+      
+      // Wait with exponential backoff
+      await new Promise(resolve => setTimeout(resolve, delay));
+      delay = Math.min(delay * factor, maxDelay);
+    }
+  }
+  
+  throw lastError;
 }
