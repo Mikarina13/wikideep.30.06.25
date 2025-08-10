@@ -1,6 +1,7 @@
 import { initMenu } from './src/utils/menu.js';
 import { recordPageVisit, getPageTitle, getPageTypeFromUrl } from './src/utils/activityTracker.js';
 import { restrictAllDateInputs } from './src/utils/dateRestriction.js';
+import { showErrorNotification } from './src/utils/errorHandler.js';
 import supabase from './src/utils/supabaseClient.js';
 
 // Whitelist of allowed domains for URL sharing
@@ -53,8 +54,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   restrictAllDateInputs();
   
   // Check authentication status
-  const { data: { session } } = await supabase.auth.getSession();
-  currentUser = session?.user || null;
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    currentUser = session?.user || null;
+  } catch (error) {
+    console.error('Error checking authentication status:', error);
+    showErrorNotification(error, 'checking authentication status');
+    currentUser = null;
+  }
 
   // Check URL parameters for specific tab
   const urlParams = new URLSearchParams(window.location.search);
