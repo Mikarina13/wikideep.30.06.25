@@ -107,6 +107,29 @@ function setupEventListeners() {
     });
   });
 
+  // Add event delegation for dynamically added elements
+  document.addEventListener('click', (e) => {
+    // Handle tab button clicks
+    if (e.target.matches('.tab-button') || e.target.closest('.tab-button')) {
+      const tabButton = e.target.matches('.tab-button') ? e.target : e.target.closest('.tab-button');
+      const tab = tabButton.dataset.tab;
+      if (tab) {
+        e.preventDefault();
+        switchTab(tab);
+      }
+    }
+    
+    // Handle content choice button clicks
+    if (e.target.matches('.choice-button') || e.target.closest('.choice-button')) {
+      const choiceButton = e.target.matches('.choice-button') ? e.target : e.target.closest('.choice-button');
+      const choice = choiceButton.dataset.choice;
+      if (choice) {
+        e.preventDefault();
+        switchContentChoice(choice);
+      }
+    }
+  });
+
   // Form submissions
   const archiveForm = document.getElementById('archive-form');
   const collabForm = document.getElementById('collab-form');
@@ -139,6 +162,7 @@ function setupEventListeners() {
 }
 
 function switchTab(tabName) {
+  console.log('Switching to tab:', tabName);
   currentTab = tabName;
   
   // Update tab buttons
@@ -175,9 +199,16 @@ function switchTab(tabName) {
       container.classList.add('tabs-hidden');
     }
   }
+  
+  // Update URL without reload
+  const currentUrl = new URL(window.location);
+  currentUrl.searchParams.set('tab', tabName);
+  window.history.replaceState({}, '', currentUrl);
 }
 
 function switchContentChoice(choice) {
+  console.log('Switching content choice to:', choice);
+  
   // Update choice buttons
   const choiceButtons = document.querySelectorAll('.choice-button');
   choiceButtons.forEach(button => {
@@ -200,6 +231,9 @@ function switchContentChoice(choice) {
 
   // Update required fields
   updateRequiredFields(choice);
+  
+  // Update submit button state after choice change
+  updateSubmitButtonState('archive');
 }
 
 function updateRequiredFields(choice) {
@@ -813,6 +847,14 @@ async function checkTermsAcceptance() {
 function initializeFormStates() {
   // Set default content choice to "paste"
   switchContentChoice('paste');
+  
+  // Set default tab if none specified
+  if (!currentTab) {
+    currentTab = 'archive';
+  }
+  
+  // Ensure the correct tab is active
+  switchTab(currentTab);
   
   // Initialize submit button states
   updateSubmitButtonState('archive');
