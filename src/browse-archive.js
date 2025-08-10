@@ -114,6 +114,16 @@ async function loadPosts() {
   showLoading();
   
   try {
+    // Add connection test before main query
+    console.log('Testing Supabase connection...');
+    const { testSupabaseConnection } = await import('./utils/supabaseHealthChecker.js');
+    const connectionTest = await testSupabaseConnection();
+    
+    if (!connectionTest.success) {
+      console.error('Supabase connection test failed:', connectionTest.errors);
+      throw new Error('Database connection failed. Your Supabase project might be paused.');
+    }
+    
     const { data: posts, error } = await supabase
       .from('archive_posts')
       .select(`
@@ -125,7 +135,13 @@ async function loadPosts() {
       `)
       .order('created_at', { ascending: false });
     
-    if (error) throw error;
+    if (error) {
+      console.error('Database query error:', error);
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error('Cannot connect to database. Please check your internet connection or try refreshing the page. Your Supabase project might be paused.');
+      }
+      throw error;
+    }
     
     allPosts = posts || [];
     filteredPosts = [...allPosts];
@@ -138,7 +154,7 @@ async function loadPosts() {
     
   } catch (error) {
     console.error('Error loading posts:', error);
-    showError('Failed to load archive posts. Please try again.');
+    showError(error.message || 'Failed to load archive posts. Please try again.');
   } finally {
     isLoading = false;
   }

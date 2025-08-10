@@ -1,6 +1,106 @@
 import supabase from './supabaseClient.js';
 
 /**
+ * Enhanced connection test with detailed error reporting
+ */
+export async function testSupabaseConnection() {
+  const results = {
+    success: false,
+    errors: [],
+    details: {},
+    suggestions: []
+  };
+
+  try {
+    console.log('Testing Supabase connection to:', import.meta.env.VITE_SUPABASE_URL);
+    
+    // Test 1: Basic connectivity
+    const startTime = performance.now();
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/`, {
+        method: 'HEAD',
+        headers: {
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        }
+      });
+      
+      results.details.httpStatus = response.status;
+      results.details.latency = Math.round(performance.now() - startTime);
+      
+      if (!response.ok) {
+        results.errors.push({
+          type: 'HTTP_ERROR',
+          message: `HTTP ${response.status}: ${response.statusText}`,
+          details: { status: response.status, statusText: response.statusText }
+        });
+        
+        if (response.status === 404) {
+          results.suggestions.push('Your Supabase project URL might be incorrect or the project may have been deleted');
+        } else if (response.status === 401) {
+          results.suggestions.push('Check your Supabase API key - it might be invalid or expired');
+        } else if (response.status === 403) {
+          results.suggestions.push('API key permissions issue - verify your anon key has the correct permissions');
+        }
+      } else {
+        results.success = true;
+      }
+    } catch (fetchError) {
+      results.errors.push({
+        type: 'NETWORK_ERROR',
+        message: fetchError.message,
+        details: fetchError
+      });
+      
+      if (fetchError.message.includes('Failed to fetch')) {
+        results.suggestions.push('Network connectivity issue - check your internet connection and firewall settings');
+        results.suggestions.push('Your Supabase project might be paused (free tier projects pause after 1 week of inactivity)');
+        results.suggestions.push('Try visiting your Supabase dashboard to wake up the project: https://supabase.com/dashboard');
+      }
+    }
+
+    // Test 2: Database table access
+    if (results.success) {
+      try {
+        const { error: tableError } = await supabase
+          .from('users')
+          .select('count', { count: 'exact', head: true });
+        
+        if (tableError) {
+          results.errors.push({
+            type: 'DATABASE_ERROR',
+            message: tableError.message,
+            details: tableError
+          });
+          
+          if (tableError.code === '42P01') {
+            results.suggestions.push('Database tables are missing - run your migrations');
+          } else if (tableError.code === '42501') {
+            results.suggestions.push('Permission denied - check your RLS policies and API key permissions');
+          }
+        }
+      } catch (dbError) {
+        results.errors.push({
+          type: 'DATABASE_ACCESS_ERROR',
+          message: dbError.message,
+          details: dbError
+        });
+      }
+    }
+
+    return results;
+  } catch (error) {
+    results.errors.push({
+      type: 'CRITICAL_ERROR',
+      message: error.message,
+      details: error
+    });
+    return results;
+  }
+}
+
+/**
  * Comprehensive Supabase connection checker
  * Tests various aspects of the Supabase connection and returns detailed diagnostics
  */

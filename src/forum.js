@@ -44,6 +44,16 @@ async function loadForumDiscussions() {
   showLoading();
   
   try {
+    // Add connection test before main query
+    console.log('Testing Supabase connection...');
+    const { testSupabaseConnection } = await import('./utils/supabaseHealthChecker.js');
+    const connectionTest = await testSupabaseConnection();
+    
+    if (!connectionTest.success) {
+      console.error('Supabase connection test failed:', connectionTest.errors);
+      throw new Error('Database connection failed. Your Supabase project might be paused.');
+    }
+    
     const { data: discussions, error } = await supabase
       .from('forum_posts')
       .select(`
@@ -56,7 +66,13 @@ async function loadForumDiscussions() {
       .is('parent_comment_id', null) // Only get top-level discussions
       .order('created_at', { ascending: false });
     
-    if (error) throw error;
+    if (error) {
+      console.error('Database query error:', error);
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error('Cannot connect to database. Please check your internet connection or try refreshing the page. Your Supabase project might be paused.');
+      }
+      throw error;
+    }
     
     // Get reply counts for each discussion
     if (discussions) {
@@ -74,7 +90,7 @@ async function loadForumDiscussions() {
     
   } catch (error) {
     console.error('Error loading discussions:', error);
-    showError('Failed to load discussions. Please try again.');
+    showError(error.message || 'Failed to load discussions. Please try again.');
   } finally {
     isLoading = false;
   }

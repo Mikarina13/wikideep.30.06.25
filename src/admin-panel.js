@@ -468,6 +468,50 @@ function setupEventListeners() {
   if (exportLogsBtn) {
     exportLogsBtn.addEventListener('click', exportLogs);
   }
+  
+  const wakeSupabaseBtn = document.getElementById('wake-supabase-btn');
+  if (wakeSupabaseBtn) {
+    wakeSupabaseBtn.addEventListener('click', wakeSupabase);
+  }
+}
+
+async function wakeSupabase() {
+  try {
+    showNotification('Attempting to wake up Supabase project...', 'info');
+    
+    // Import the test function
+    const { testSupabaseConnection } = await import('./utils/supabaseHealthChecker.js');
+    
+    // Run multiple connection attempts
+    for (let i = 0; i < 3; i++) {
+      showNotification(`Wake attempt ${i + 1}/3...`, 'info');
+      
+      const result = await testSupabaseConnection();
+      
+      if (result.success) {
+        showNotification('Supabase project is now awake and responding!', 'success');
+        // Reload the dashboard
+        setTimeout(() => window.location.reload(), 1500);
+        return;
+      }
+      
+      // Wait between attempts
+      if (i < 2) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+    
+    showNotification('Unable to wake Supabase project. Please visit your Supabase dashboard manually.', 'warning');
+    
+    // Open Supabase dashboard
+    setTimeout(() => {
+      window.open('https://supabase.com/dashboard', '_blank');
+    }, 2000);
+    
+  } catch (error) {
+    console.error('Error waking Supabase:', error);
+    showNotification('Error attempting to wake Supabase: ' + error.message, 'error');
+  }
 }
 
 async function clearCache() {
@@ -490,19 +534,36 @@ async function clearCache() {
 
 async function runConnectionTest() {
   try {
-    showNotification('Running comprehensive connection test...', 'info');
+    // Import the enhanced test function
+    const { testSupabaseConnection } = await import('./utils/supabaseHealthChecker.js');
     
-    // Run the full health check
-    const results = await checkSupabaseHealth();
+    showNotification('Running enhanced connection test...', 'info');
     
-    // Display results in a modal or alert
-    if (results.healthy) {
-      showNotification('Connection test successful! All services are working properly.', 'success');
-    } else {
-      showNotification(`Connection test completed with issues. ${results.errors.length} error(s) found.`, 'warning');
+    // Run both the basic connection test and full health check
+    const [connectionTest, healthCheck] = await Promise.all([
+      testSupabaseConnection(),
+      checkSupabaseHealth()
+    ]);
+    
+    if (connectionTest.success && healthCheck.healthy) {
+      showNotification(`Connection test successful! Latency: ${connectionTest.details.latency}ms`, 'success');
+    } else if (!connectionTest.success) {
+      // Show specific connection issues and suggestions
+      const suggestions = connectionTest.suggestions.join(' ');
+      showNotification(`Connection failed: ${connectionTest.errors[0]?.message}. ${suggestions}`, 'error');
       
-      // Log detailed results to console for debugging
-      console.log('Connection test results:', results);
+      // Auto-open Supabase dashboard if it seems like the project is paused
+      if (connectionTest.errors.some(e => e.message.includes('Failed to fetch'))) {
+        setTimeout(() => {
+          const shouldOpenDashboard = confirm('Your Supabase project might be paused. Would you like to open the Supabase dashboard to wake it up?');
+          if (shouldOpenDashboard) {
+            window.open('https://supabase.com/dashboard', '_blank');
+          }
+        }, 3000);
+      }
+    } else {
+      showNotification(`Health check completed with issues. Check console for details.`, 'warning');
+      console.log('Detailed results:', { connectionTest, healthCheck });
     }
   } catch (error) {
     console.error('Error running connection test:', error);
